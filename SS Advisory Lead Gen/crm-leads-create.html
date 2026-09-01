@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create New Lead | SS Advisory Insurance Brokerage</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/vendors/css/vendors.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Modular Design System -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/ss-custom.css?v=2.1" />
+
+    <link rel="icon" type="image/png" href="assets/images/logo.png" />
+    <link rel="shortcut icon" type="image/png" href="assets/images/logo.png" />
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="nxl-preloader" id="preloader">
+        <div class="preloader-content text-center">
+            <div class="preloader-logo mb-3">
+                <img src="assets/images/logo.png" alt="SS Advisory Logo" class="brand-logo-img" />
+            </div>
+            <div class="spinner-border text-primary" role="status" style="width: 2.2rem; height: 2.2rem; color: var(--color-cyan) !important;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Sidebar -->
+    <nav class="nxl-navigation" id="mainSidebar">
+        <div class="navbar-wrapper">
+            <div class="m-header">
+                <a href="index.html" class="b-brand d-flex align-items-center gap-3 text-decoration-none" title="SS Advisory Lead Engine Home">
+                    <img src="assets/images/logo.png" alt="SS Advisory Logo" class="brand-logo-img" />
+                    <div class="nxl-mtext d-flex flex-column">
+                        <span class="fs-14 fw-bolder text-white tracking-wide" style="letter-spacing: 0.05em; line-height: 1.1;">SS <span style="color: var(--color-cyan);">ADVISORY</span></span>
+                        <span class="fs-10 text-muted fw-semibold text-uppercase mt-1" style="letter-spacing: 0.12em; color: #94A3B8 !important;">Lead Engine</span>
+                    </div>
+                </a>
+            </div>
+            <div class="navbar-content">
+                <ul class="nxl-navbar">
+                    <li class="nxl-item">
+                        <a href="index.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-grid"></i></span>
+                            <span class="nxl-mtext">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu active nxl-trigger">
+                        <a href="clients.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-users"></i></span>
+                            <span class="nxl-mtext">Clients</span>
+                            <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                        <ul class="nxl-submenu" style="display: block !important;">
+                            <li class="nxl-item"><a class="nxl-link" href="clients-login.html">Login Client</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-inforce.html">Inforce Clients</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-inactive.html">Inactive Clients</a></li>
+
+                            <li class="nxl-item"><a class="nxl-link" href="claims.html">Claim update</a></li>
+
+
+                            <li class="nxl-item"><a class="nxl-link" href="clients-cancellation.html">Cancellation update</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-npw-deferred.html">NPW Deferred</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients.html">All Clients</a></li>
+                        </ul>
+                    </li>
+                    <li class="nxl-item active">
+                        <a href="crm-leads-pipeline.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-target"></i></span>
+                            <span class="nxl-mtext">Leads</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="tasks.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-check-square"></i></span>
+                            <span class="nxl-mtext">Tasks & Follow ups</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="calendar.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-calendar"></i></span>
+                            <span class="nxl-mtext">Calendar</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="reports-leads.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-bar-chart-2"></i></span>
+                            <span class="nxl-mtext">Reports</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="documents.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-folder"></i></span>
+                            <span class="nxl-mtext">Documents</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="access.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-lock"></i></span>
+                            <span class="nxl-mtext">Access Control</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Bar -->
+    <header class="nxl-header">
+        <div class="header-wrapper">
+            <div class="header-left">
+                <a href="javascript:void(0);" class="nxl-head-mobile-toggler" id="mobile-collapse">
+                    <i class="feather-menu"></i>
+                </a>
+                <div class="nxl-navigation-toggle d-none d-lg-block">
+                    <a href="javascript:void(0);" id="menu-mini-button"><i class="feather-align-left"></i></a>
+                    <a href="javascript:void(0);" id="menu-expend-button" style="display:none"><i class="feather-arrow-right"></i></a>
+                </div>
+                <div class="header-title-block ms-2">
+                    <h4>Create Lead</h4>
+                    <ul class="breadcrumb">
+                        <li><a href="index.html">Home</a></li>
+                        <li>/</li>
+                        <li><a href="crm-leads-pipeline.html">Leads</a></li>
+                        <li>/</li>
+                        <li class="active">Create Lead</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="javascript:void(0);" class="header-action-bell" title="Notifications">
+                    <i class="feather-bell"></i>
+                    <span class="header-bell-badge">5</span>
+                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="header-avatar-circle">
+                        <img src="assets/images/user-avatar.svg" alt="Sushant Yadav" />
+                    </div>
+                    <div class="d-none d-md-block text-start">
+                        <div class="fs-13 fw-bold text-dark mb-0" style="line-height: 1.1;">Sushant Yadav</div>
+                        <div class="fs-11 text-muted fw-semibold">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="nxl-container">
+        <div class="nxl-content d-flex flex-column gap-4">
+            <div class="card-widget p-4">
+                <form onsubmit="event.preventDefault(); window.location.href='crm-leads-pipeline.html';">
+                    <h5 class="fw-bold text-dark mb-3">Prospect Lead Details</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold fs-13 text-dark">First Name *</label>
+                            <input type="text" class="form-control" required placeholder="e.g. Jason">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold fs-13 text-dark">Last Name *</label>
+                            <input type="text" class="form-control" required placeholder="e.g. Taylor">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold fs-13 text-dark">Email Address *</label>
+                            <input type="email" class="form-control" required placeholder="jason@example.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold fs-13 text-dark">Phone Number *</label>
+                            <input type="text" class="form-control" required placeholder="021 555 9988">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold fs-13 text-dark">Acquisition Source</label>
+                            <select class="form-select">
+                                <option>Meta Leads</option>
+                                <option>Door to Door</option>
+                                <option>Google Ads</option>
+                                <option>Referral</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold fs-13 text-dark">Estimated Cover ($)</label>
+                            <input type="number" class="form-control" placeholder="500000">
+                        </div>
+                        <div class="col-12 text-end mt-4">
+                            <a href="crm-leads-pipeline.html" class="btn btn-light me-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">Create Lead</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/vendors/js/nxlNavigation.min.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/script.js?v=1.3"></script>
+    
+    <script src="assets/js/dashboard-redesign.js"></script>
+
+    
+    <script src="assets/js/pages/crm-leads-create.js"></script>
+</body>
+
+</html>

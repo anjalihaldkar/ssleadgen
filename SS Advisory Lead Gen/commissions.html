@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Commissions & Revenue | SS Advisory Insurance Brokerage</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/vendors/css/vendors.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="assets/css/theme.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/ss-custom.css?v=2.1" />
+
+    <link rel="icon" type="image/png" href="assets/images/logo.png" />
+    <link rel="shortcut icon" type="image/png" href="assets/images/logo.png" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="nxl-preloader" id="preloader">
+        <div class="preloader-content text-center">
+            <div class="preloader-logo mb-3">
+                <img src="assets/images/logo.png" alt="SS Advisory Logo" class="img-fluid preloader-img" style="width: 48px;" />
+            </div>
+            <div class="spinner-border text-primary" role="status" style="width: 2.2rem; height: 2.2rem; color: #00A8B5 !important;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Sidebar -->
+    <nav class="nxl-navigation">
+        <div class="navbar-wrapper">
+            <div class="m-header">
+                <a href="dashboard.html" class="b-brand d-flex align-items-center gap-3 text-decoration-none" title="SS Advisory Lead Engine Home">
+                    <img src="assets/images/logo.png" alt="SS Advisory Logo" class="brand-logo-img flex-shrink-0" style="width: 38px; height: 38px; object-fit: contain; border-radius: 8px;" />
+                    <div class="nxl-mtext d-flex flex-column">
+                        <span class="fs-14 fw-bolder text-white tracking-wide" style="letter-spacing: 0.05em; line-height: 1.1;">SS <span style="color: #00A8B5;">ADVISORY</span></span>
+                        <span class="fs-10 text-muted fw-semibold text-uppercase mt-1" style="letter-spacing: 0.12em; color: #94A3B8 !important;">Lead Engine</span>
+                    </div>
+                </a>
+            </div>
+            <div class="navbar-content">
+                <ul class="nxl-navbar">
+                    <li class="nxl-item">
+                        <a href="dashboard.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-grid"></i></span>
+                            <span class="nxl-mtext">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu active nxl-trigger">
+                        <a href="clients.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-users"></i></span>
+                            <span class="nxl-mtext">Clients</span>
+                            <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                        <ul class="nxl-submenu" style="display: block !important;">
+                            <li class="nxl-item"><a class="nxl-link" href="clients-login.html">Login Client</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-inforce.html">Inforce Clients</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-inactive.html">Inactive Clients</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-npw-deferred.html">NPW Deferred</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients.html">All Clients</a></li>
+                        </ul>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="crm-leads-pipeline.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-target"></i></span>
+                            <span class="nxl-mtext">Leads</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="tasks.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-check-square"></i></span>
+                            <span class="nxl-mtext">Tasks & Follow ups</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="calendar.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-calendar"></i></span>
+                            <span class="nxl-mtext">Calendar</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="reports-leads.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-bar-chart-2"></i></span>
+                            <span class="nxl-mtext">Reports</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="documents.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-folder"></i></span>
+                            <span class="nxl-mtext">Documents</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="claims.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-shield"></i></span>
+                            <span class="nxl-mtext">Claims</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item active">
+                        <a href="commissions.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-dollar-sign"></i></span>
+                            <span class="nxl-mtext">Commissions</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="users.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-lock"></i></span>
+                            <span class="nxl-mtext">Access Control</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="sidebar-help-widget d-flex align-items-center gap-3">
+                    <div class="avatar-text avatar-md rounded-circle bg-soft-primary text-primary flex-shrink-0" style="background: rgba(56, 189, 248, 0.15); color: #38BDF8;">
+                        <i class="feather-headphones fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fs-12 text-white fw-bold mb-0">Need Help?</h6>
+                        <a href="javascript:void(0);" class="fs-11 text-muted text-decoration-none hover-white" style="color: #94A3B8 !important;">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Bar -->
+    <header class="nxl-header">
+        <div class="header-wrapper">
+            <div class="header-left d-flex align-items-center gap-3">
+                <a href="javascript:void(0);" class="nxl-head-mobile-toggler" id="mobile-collapse">
+                    <div class="hamburger hamburger--arrowturn"><div class="hamburger-box"><div class="hamburger-inner"></div></div></div>
+                </a>
+                <div class="nxl-navigation-toggle">
+                    <a href="javascript:void(0);" id="menu-mini-button"><i class="feather-align-left"></i></a>
+                    <a href="javascript:void(0);" id="menu-expend-button" style="display:none"><i class="feather-arrow-right"></i></a>
+                </div>
+                <h4 class="header-top-title ms-2 fw-bold text-dark mb-0">Commissions</h4>
+            </div>
+            <div class="header-right ms-auto d-flex align-items-center gap-3">
+                <a href="javascript:void(0);" class="header-action-btn" title="Search"><i class="feather-search"></i></a>
+                <div class="dropdown nxl-h-item">
+                    <a class="header-action-btn position-relative" data-bs-toggle="dropdown" href="javascript:void(0);" role="button"><i class="feather-bell"></i><span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-circle" style="font-size: 0.65rem; padding: 3px 6px;">5</span></a>
+                </div>
+                <div class="dropdown nxl-h-item ms-2">
+                    <a href="javascript:void(0);" class="d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="dropdown" role="button">
+                        <img src="assets/images/user-avatar.svg" alt="Sushant Yadav" class="user-avatar-img" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+                        <div class="d-none d-md-block text-start">
+                            <div class="fs-13 fw-bold text-dark mb-0" style="line-height: 1.1;">Sushant Yadav</div>
+                            <div class="fs-11 text-muted fw-semibold">Administrator</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="nxl-container">
+        <div class="nxl-content p-4 d-flex flex-column gap-4">
+            <!-- Standardized Breadcrumb Header matching settings-sources.html -->
+            <div class="page-header mb-0">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-0 fw-bold text-dark">Brokerage Revenue</h5>
+                    </div>
+                    <ul class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="dashboard.html">Home</a></li>
+                        <li class="breadcrumb-item active">Commissions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                    <h4 class="fw-bold text-dark mb-1">Brokerage Commission Statements</h4>
+                    <p class="text-muted fs-13 mb-0">Initial upfront commissions and recurring renewal trail payments.</p>
+                </div>
+                <button class="btn btn-outline-primary btn-sm px-3 fw-bold" onclick="alert('Downloading Monthly Brokerage Statement...')"><i class="feather-download me-1"></i> Download Statement</button>
+            </div>
+
+            <!-- KPI Row -->
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-green"><i class="feather-dollar-sign"></i></div>
+                        <div>
+                            <div class="kpi-label">Upfront Commission (YTD)</div>
+                            <div class="kpi-val">$328,450</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-purple"><i class="feather-refresh-cw"></i></div>
+                        <div>
+                            <div class="kpi-label">Renewal Trail (Monthly)</div>
+                            <div class="kpi-val">$24,180</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-blue"><i class="feather-pie-chart"></i></div>
+                        <div>
+                            <div class="kpi-label">Average Commission Rate</div>
+                            <div class="kpi-val">190% Initial</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="card-widget">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle w-100" id="commissionsTable">
+                        <thead>
+                            <tr class="fs-12 text-muted text-uppercase fw-semibold" style="background: #F8FAFC;">
+                                <th>Policy #</th>
+                                <th>Client Name</th>
+                                <th>Insurer</th>
+                                <th>Type</th>
+                                <th>Annual Premium</th>
+                                <th>Commission Type</th>
+                                <th>Payout Amount</th>
+                                <th>Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-2627</td>
+                                <td class="fs-13">Kishore Kumar</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-warning text-warning fs-11">Income Protection</span></td>
+                                <td class="fs-13 fw-semibold">$1,996</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$199</td>
+                                <td class="fs-13 text-muted">09 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-4109</td>
+                                <td class="fs-13">Suman Pappula</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$2,250</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$4,275</td>
+                                <td class="fs-13 text-muted">20 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-1349</td>
+                                <td class="fs-13">Rahul Sharma</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-warning text-warning fs-11">Income Protection</span></td>
+                                <td class="fs-13 fw-semibold">$3,495</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$6,640</td>
+                                <td class="fs-13 text-muted">19 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-4362</td>
+                                <td class="fs-13">Priya Patel</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$6,303</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$11,975</td>
+                                <td class="fs-13 text-muted">08 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-6383</td>
+                                <td class="fs-13">Sarah Connor</td>
+                                <td class="fs-13">Fidelity Life</td>
+                                <td><span class="badge bg-soft-primary text-primary fs-11">Life & Cover</span></td>
+                                <td class="fs-13 fw-semibold">$3,771</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$7,164</td>
+                                <td class="fs-13 text-muted">05 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-9850</td>
+                                <td class="fs-13">Amit Miller</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$2,400</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$4,560</td>
+                                <td class="fs-13 text-muted">05 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-1243</td>
+                                <td class="fs-13">David Chang</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$6,323</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$632</td>
+                                <td class="fs-13 text-muted">01 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-3854</td>
+                                <td class="fs-13">Michael Singh</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-primary text-primary fs-11">Life & Cover</span></td>
+                                <td class="fs-13 fw-semibold">$2,538</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$253</td>
+                                <td class="fs-13 text-muted">17 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-2862</td>
+                                <td class="fs-13">Aarav Cooper</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$5,172</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$517</td>
+                                <td class="fs-13 text-muted">17 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-2786</td>
+                                <td class="fs-13">Vandana Taylor</td>
+                                <td class="fs-13">Chubb Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$9,244</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$17,563</td>
+                                <td class="fs-13 text-muted">17 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-5941</td>
+                                <td class="fs-13">James Walker</td>
+                                <td class="fs-13">Chubb Life</td>
+                                <td><span class="badge bg-soft-primary text-primary fs-11">Life & Cover</span></td>
+                                <td class="fs-13 fw-semibold">$1,998</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$199</td>
+                                <td class="fs-13 text-muted">13 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-7984</td>
+                                <td class="fs-13">Olivia Patel</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$7,335</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$733</td>
+                                <td class="fs-13 text-muted">03 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-2323</td>
+                                <td class="fs-13">Ethan Smith</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$2,038</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$3,872</td>
+                                <td class="fs-13 text-muted">09 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-9984</td>
+                                <td class="fs-13">Arjun Johnson</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$6,393</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$639</td>
+                                <td class="fs-13 text-muted">15 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-9282</td>
+                                <td class="fs-13">Neha Williams</td>
+                                <td class="fs-13">Asteron Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$2,312</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$4,392</td>
+                                <td class="fs-13 text-muted">18 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-4522</td>
+                                <td class="fs-13">John Brown</td>
+                                <td class="fs-13">Chubb Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$8,775</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$16,672</td>
+                                <td class="fs-13 text-muted">14 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-6553</td>
+                                <td class="fs-13">Emma Jones</td>
+                                <td class="fs-13">Chubb Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$4,907</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$9,323</td>
+                                <td class="fs-13 text-muted">11 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-7992</td>
+                                <td class="fs-13">Robert Garcia</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-warning text-warning fs-11">Income Protection</span></td>
+                                <td class="fs-13 fw-semibold">$4,566</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$8,675</td>
+                                <td class="fs-13 text-muted">16 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-2099</td>
+                                <td class="fs-13">Sophia Miller</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-primary text-primary fs-11">Life & Cover</span></td>
+                                <td class="fs-13 fw-semibold">$2,263</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$226</td>
+                                <td class="fs-13 text-muted">04 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-7105</td>
+                                <td class="fs-13">William Davis</td>
+                                <td class="fs-13">Fidelity Life</td>
+                                <td><span class="badge bg-soft-primary text-primary fs-11">Life & Cover</span></td>
+                                <td class="fs-13 fw-semibold">$6,304</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$630</td>
+                                <td class="fs-13 text-muted">04 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-7730</td>
+                                <td class="fs-13">Isabella Rodriguez</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$8,611</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$16,360</td>
+                                <td class="fs-13 text-muted">10 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-6119</td>
+                                <td class="fs-13">Daniel Martinez</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-primary text-primary fs-11">Life & Cover</span></td>
+                                <td class="fs-13 fw-semibold">$6,234</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$11,844</td>
+                                <td class="fs-13 text-muted">05 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-8900</td>
+                                <td class="fs-13">Mia Hernandez</td>
+                                <td class="fs-13">Fidelity Life</td>
+                                <td><span class="badge bg-soft-primary text-primary fs-11">Life & Cover</span></td>
+                                <td class="fs-13 fw-semibold">$4,368</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$436</td>
+                                <td class="fs-13 text-muted">04 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-5564</td>
+                                <td class="fs-13">Joseph Lopez</td>
+                                <td class="fs-13">Asteron Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$8,112</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$811</td>
+                                <td class="fs-13 text-muted">18 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-1430</td>
+                                <td class="fs-13">Charlotte Gonzalez</td>
+                                <td class="fs-13">Asteron Life</td>
+                                <td><span class="badge bg-soft-warning text-warning fs-11">Income Protection</span></td>
+                                <td class="fs-13 fw-semibold">$1,737</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$3,300</td>
+                                <td class="fs-13 text-muted">09 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-6062</td>
+                                <td class="fs-13">Matthew Wilson</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-warning text-warning fs-11">Income Protection</span></td>
+                                <td class="fs-13 fw-semibold">$1,550</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$2,945</td>
+                                <td class="fs-13 text-muted">05 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-7566</td>
+                                <td class="fs-13">Amelia Anderson</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$7,570</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$14,383</td>
+                                <td class="fs-13 text-muted">03 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-9691</td>
+                                <td class="fs-13">David Thomas</td>
+                                <td class="fs-13">Fidelity Life</td>
+                                <td><span class="badge bg-soft-danger text-danger fs-11">Key Person Business</span></td>
+                                <td class="fs-13 fw-semibold">$4,939</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$493</td>
+                                <td class="fs-13 text-muted">11 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-3578</td>
+                                <td class="fs-13">Harper Taylor</td>
+                                <td class="fs-13">Partners Life</td>
+                                <td><span class="badge bg-soft-warning text-warning fs-11">Income Protection</span></td>
+                                <td class="fs-13 fw-semibold">$7,411</td>
+                                <td><span class="badge bg-soft-purple text-purple fs-11">Renewal Trail</span></td>
+                                <td class="fs-13 fw-bold text-success">$741</td>
+                                <td class="fs-13 text-muted">19 Aug 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark fs-13">POL-2026-2391</td>
+                                <td class="fs-13">Andrew Moore</td>
+                                <td class="fs-13">AIA Life</td>
+                                <td><span class="badge bg-soft-info text-info fs-11">Trauma & Medical</span></td>
+                                <td class="fs-13 fw-semibold">$2,789</td>
+                                <td><span class="badge bg-soft-success text-success fs-11">Initial Upfront</span></td>
+                                <td class="fs-13 fw-bold text-success">$5,299</td>
+                                <td class="fs-13 text-muted">03 Aug 2026</td>
+                            </tr>
+</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/vendors/js/nxlNavigation.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/script.js?v=1.3"></script>
+    
+    <script src="assets/js/dashboard-redesign.js"></script>
+
+    
+    <script src="assets/js/pages/commissions.js"></script>
+</body>
+
+</html>

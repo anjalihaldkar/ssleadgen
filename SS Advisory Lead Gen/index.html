@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard | SS Advisory Insurance Brokerage</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/vendors/css/vendors.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Modular Design System -->
+    <link rel="stylesheet" href="assets/css/styles.css?v=10.0" />
+    <link rel="stylesheet" href="assets/css/ss-custom.css?v=2.1" />
+
+    <link rel="icon" type="image/png" href="assets/images/logo.png" />
+    <link rel="shortcut icon" type="image/png" href="assets/images/logo.png" />
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="nxl-preloader" id="preloader">
+        <div class="preloader-content text-center">
+            <div class="preloader-logo mb-3">
+                <img src="assets/images/logo.png" alt="SS Advisory Logo" class="brand-logo-img" />
+            </div>
+            <div class="spinner-border text-primary" role="status"
+                style="width: 2.2rem; height: 2.2rem; color: var(--color-cyan) !important;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Sidebar (Consistent across all 15 pages) -->
+    <nav class="nxl-navigation" id="mainSidebar">
+        <div class="navbar-wrapper">
+            <div class="m-header">
+                <a href="index.html" class="b-brand d-flex align-items-center gap-3 text-decoration-none"
+                    title="SS Advisory Lead Engine Home">
+                    <img src="assets/images/logo.png" alt="SS Advisory Logo" class="brand-logo-img" />
+                    <div class="nxl-mtext d-flex flex-column">
+                        <span class="fs-14 fw-bolder text-white tracking-wide"
+                            style="letter-spacing: 0.05em; line-height: 1.1;">SS <span
+                                style="color: var(--color-cyan);">ADVISORY</span></span>
+                        <span class="fs-10 text-muted fw-semibold text-uppercase mt-1"
+                            style="letter-spacing: 0.12em; color: #94A3B8 !important;">LEAD ENGINE</span>
+                    </div>
+                </a>
+            </div>
+            <div class="navbar-content">
+                <ul class="nxl-navbar">
+                    <li class="nxl-item active">
+                        <a href="index.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-grid"></i></span>
+                            <span class="nxl-mtext">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu active nxl-trigger">
+                        <a href="clients.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-users"></i></span>
+                            <span class="nxl-mtext">Clients</span>
+                            <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                        <ul class="nxl-submenu" style="display: block !important;">
+                            <li class="nxl-item"><a class="nxl-link" href="clients-login.html">Login Client</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-inforce.html">Inforce Clients</a>
+                            </li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-inactive.html">Inactive Clients</a>
+                            </li>
+
+                            <li class="nxl-item"><a class="nxl-link" href="claims.html">Claim update</a></li>
+
+
+                            <li class="nxl-item"><a class="nxl-link" href="clients-cancellation.html">Cancellation
+                                    update</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients-npw-deferred.html">NPW Deferred</a>
+                            </li>
+                            <li class="nxl-item"><a class="nxl-link" href="clients.html">All Clients</a></li>
+                        </ul>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="crm-leads-pipeline.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-target"></i></span>
+                            <span class="nxl-mtext">Leads</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="tasks.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-check-square"></i></span>
+                            <span class="nxl-mtext">Tasks & Follow ups</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="calendar.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-calendar"></i></span>
+                            <span class="nxl-mtext">Calendar</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="reports-leads.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-bar-chart-2"></i></span>
+                            <span class="nxl-mtext">Reports</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="documents.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-folder"></i></span>
+                            <span class="nxl-mtext">Documents</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item">
+                        <a href="access.html" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-lock"></i></span>
+                            <span class="nxl-mtext">Access Control</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Bar -->
+    <header class="nxl-header">
+        <div class="header-wrapper">
+            <div class="header-left">
+                <a href="javascript:void(0);" id="menu-mini-button" class="header-single-toggle-btn"
+                    title="Toggle Sidebar Navigation">
+                    <i class="feather-menu"></i>
+                </a>
+                <div class="header-title-block ms-2">
+                    <h4 class="mb-0 fw-bold">Dashboard</h4>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <!-- NOTIFICATION HOVER POPUP -->
+                <div class="header-action-bell-wrapper">
+                    <div class="header-action-bell" title="Notifications">
+                        <i class="feather-bell"></i>
+                        <span class="header-bell-badge">5</span>
+                    </div>
+                    <div class="header-notification-dropdown">
+                        <div class="notification-header">
+                            <h6 class="fw-bold text-dark mb-0 fs-13">Notifications</h6>
+                            <span class="badge bg-soft-primary text-primary fs-10">5 New</span>
+                        </div>
+                        <div class="notification-list">
+                            <a href="crm-leads-pipeline.html" class="notification-item">
+                                <div class="avatar-text bg-soft-primary text-primary rounded-circle flex-shrink-0"><i
+                                        class="feather-user-plus"></i></div>
+                                <div>
+                                    <div class="fs-12 fw-bold text-dark">New Lead Assigned</div>
+                                    <div class="fs-11 text-muted">Michael Chang was assigned to your pipeline.</div>
+                                    <div class="fs-10 text-muted mt-1">10 mins ago</div>
+                                </div>
+                            </a>
+                            <a href="policies.html" class="notification-item">
+                                <div class="avatar-text bg-soft-success text-success rounded-circle flex-shrink-0"><i
+                                        class="feather-shield"></i></div>
+                                <div>
+                                    <div class="fs-12 fw-bold text-dark">Policy Issued</div>
+                                    <div class="fs-11 text-muted">AIA Life policy POL-2026-8812 is active.</div>
+                                    <div class="fs-10 text-muted mt-1">1 hour ago</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER AVATAR HOVER DROPDOWN -->
+                <div class="header-user-profile-wrapper">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="header-avatar-circle">
+                            <img src="assets/images/user-avatar.svg" alt="Sushant Yadav" />
+                        </div>
+                        <div class="d-none d-md-block text-start">
+                            <div class="fs-13 fw-bold text-dark mb-0" style="line-height: 1.1;">Sushant Yadav <i
+                                    class="feather-chevron-down ms-1 fs-11 text-muted"></i></div>
+                            <div class="fs-11 text-muted fw-semibold">Administrator</div>
+                        </div>
+                    </div>
+                    <div class="header-user-dropdown">
+                        <div class="px-3 py-2 border-bottom mb-1">
+                            <div class="fw-bold text-dark fs-13">Sushant Yadav</div>
+                            <div class="fs-11 text-muted">sushant@ssadvisory.co.nz</div>
+                        </div>
+                        <button class="user-dropdown-item" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
+                            <i class="feather-key text-primary me-2"></i> Reset Password
+                        </button>
+                        <button class="user-dropdown-item text-danger" data-bs-toggle="modal"
+                            data-bs-target="#logoutModal">
+                            <i class="feather-log-out text-danger me-2"></i> Logout Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Responsive Dashboard Container -->
+    <main class="nxl-container">
+        <div class="nxl-content d-flex flex-column gap-4">
+
+            <!-- 1. TOP FILTER SEARCH BAR (RESPONSIVE FLEX - NO TRUNCATION) -->
+            <section class="dash-filter-card">
+                <div class="d-flex align-items-end justify-content-between flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-3 flex-wrap flex-fill">
+                        <div style="min-width: 170px;" class="flex-fill">
+                            <label class="fs-11 fw-bold text-muted mb-1 d-block">Client Search</label>
+                            <div class="dash-filter-input-group">
+                                <i class="feather-search"></i>
+                                <input type="text" id="filterClientSearch" class="form-control dash-filter-input"
+                                    placeholder="Search by client name" />
+                            </div>
+                        </div>
+                        <div style="min-width: 170px;" class="flex-fill">
+                            <label class="fs-11 fw-bold text-muted mb-1 d-block">Number Search</label>
+                            <div class="dash-filter-input-group">
+                                <i class="feather-search"></i>
+                                <input type="text" id="filterNumberSearch" class="form-control dash-filter-input"
+                                    placeholder="Search by phone number" />
+                            </div>
+                        </div>
+                        <div style="min-width: 170px;" class="flex-fill">
+                            <label class="fs-11 fw-bold text-muted mb-1 d-block">Address Search</label>
+                            <div class="dash-filter-input-group">
+                                <i class="feather-search"></i>
+                                <input type="text" id="filterAddressSearch" class="form-control dash-filter-input"
+                                    placeholder="Search by address" />
+                            </div>
+                        </div>
+                        <div style="min-width: 150px;" class="flex-fill">
+                            <label class="fs-11 fw-bold text-muted mb-1 d-block">Date of Birth Search</label>
+                            <div class="dash-filter-input-group">
+                                <i class="feather-calendar"></i>
+                                <input type="text" id="filterDobSearch" class="form-control dash-filter-input"
+                                    placeholder="DD / MM / YYYY" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                        <button id="btnExecuteSearch" class="btn btn-navy px-3 py-2 fw-bold"><i
+                                class="feather-search me-1"></i> Search</button>
+                        <button id="btnClearSearch" class="btn btn-light px-3 py-2 fw-semibold">Clear</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. TOP KPI STAT CARDS ROW (5 SOLID CIRCLE AVATAR CARDS) -->
+            <section class="row g-3">
+                <div class="col-xl-2-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-blue"><i class="feather-users"></i></div>
+                        <div>
+                            <div class="kpi-label">Total Clients</div>
+                            <div class="kpi-val">1,245</div>
+                            <div class="kpi-badge text-success"><i class="feather-arrow-up-right"></i> ↑ 8.5% <span
+                                    class="text-muted fw-normal ms-1">vs last month</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-green"><i class="feather-shield"></i></div>
+                        <div>
+                            <div class="kpi-label">Inforce Clients</div>
+                            <div class="kpi-val">892</div>
+                            <div class="kpi-badge text-success"><i class="feather-arrow-up-right"></i> ↑ 6.7% <span
+                                    class="text-muted fw-normal ms-1">vs last month</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-yellow"><i class="feather-user-x"></i></div>
+                        <div>
+                            <div class="kpi-label">Inactive Clients</div>
+                            <div class="kpi-val">353</div>
+                            <div class="kpi-badge text-danger"><i class="feather-arrow-down-right"></i> ↓ 2.1% <span
+                                    class="text-muted fw-normal ms-1">vs last month</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-purple"><i class="feather-file-text"></i></div>
+                        <div>
+                            <div class="kpi-label">Active Policies</div>
+                            <div class="kpi-val">2,134</div>
+                            <div class="kpi-badge text-success"><i class="feather-arrow-up-right"></i> ↑ 7.4% <span
+                                    class="text-muted fw-normal ms-1">vs last month</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-cyan"><i class="feather-dollar-sign"></i></div>
+                        <div>
+                            <div class="kpi-label">Total Annual Premium</div>
+                            <div class="kpi-val">$4.28M</div>
+                            <div class="kpi-badge text-success"><i class="feather-arrow-up-right"></i> ↑ 9.2% <span
+                                    class="text-muted fw-normal ms-1">vs last month</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MIDDLE CHARTS & ACTIVITY FEED ROW -->
+            <section class="row g-4">
+                <div class="col-xl-4 col-lg-6">
+                    <div class="card-widget h-100">
+                        <h6 class="widget-title mb-3">Client Status Overview</h6>
+                        <div id="clientStatusChart" class="chart-container-wrapper">
+                            <div class="text-center py-2 w-100">
+                                <svg viewBox="0 0 100 100"
+                                    style="width: 155px; height: 155px; transform: rotate(-90deg);">
+                                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#F59E0B" stroke-width="13"
+                                        stroke-dasharray="238.76" stroke-dashoffset="0"></circle>
+                                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#10B981" stroke-width="13"
+                                        stroke-dasharray="238.76" stroke-dashoffset="67.5"></circle>
+                                </svg>
+                                <div class="mt-2 fs-13 fw-extrabold text-dark">Total Clients: 1,245</div>
+                                <div class="d-flex justify-content-center gap-3 fs-11 mt-1 fw-bold">
+                                    <span class="text-success"><i class="fa fa-square me-1"></i> Inforce: 892
+                                        (71.6%)</span>
+                                    <span class="text-warning"><i class="fa fa-square me-1"></i> Inactive: 353
+                                        (28.4%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6">
+                    <div class="card-widget h-100">
+                        <h6 class="widget-title mb-3">Clients by Source</h6>
+                        <div id="clientsBySourceChart" class="chart-container-wrapper">
+                            <div class="text-center py-2 w-100">
+                                <svg viewBox="0 0 100 100"
+                                    style="width: 155px; height: 155px; transform: rotate(-90deg);">
+                                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#2563EB" stroke-width="13"
+                                        stroke-dasharray="238.76" stroke-dashoffset="0"></circle>
+                                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#10B981" stroke-width="13"
+                                        stroke-dasharray="238.76" stroke-dashoffset="93"></circle>
+                                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#F59E0B" stroke-width="13"
+                                        stroke-dasharray="238.76" stroke-dashoffset="154"></circle>
+                                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#8B5CF6" stroke-width="13"
+                                        stroke-dasharray="238.76" stroke-dashoffset="194"></circle>
+                                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#94A3B8" stroke-width="13"
+                                        stroke-dasharray="238.76" stroke-dashoffset="221"></circle>
+                                </svg>
+                                <div class="d-flex flex-wrap justify-content-center gap-2 fs-11 mt-2 fw-bold">
+                                    <span style="color: #2563EB;"><i class="fa fa-circle me-1"></i> Referral 485
+                                        (39.0%)</span>
+                                    <span style="color: #10B981;"><i class="fa fa-circle me-1"></i> Existing 320
+                                        (25.7%)</span>
+                                    <span style="color: #F59E0B;"><i class="fa fa-circle me-1"></i> Online 210
+                                        (16.9%)</span>
+                                    <span style="color: #8B5CF6;"><i class="fa fa-circle me-1"></i> Partner 140
+                                        (11.2%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-12">
+                    <div class="card-widget h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="widget-title mb-0">Activity Feed</h6>
+                            <a href="tasks.html" class="fs-12 text-primary fw-bold text-decoration-none">View All</a>
+                        </div>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-text bg-soft-primary text-primary rounded-circle flex-shrink-0"><i
+                                        class="feather-user-plus"></i></div>
+                                <div class="flex-fill">
+                                    <div class="fw-bold text-dark fs-13">New client added</div>
+                                    <div class="text-muted fs-12">Rahul Sharma</div>
+                                </div>
+                                <div class="text-muted fs-11 flex-shrink-0">18 Aug 2026, 10:45 AM</div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-text bg-soft-purple text-purple rounded-circle flex-shrink-0"><i
+                                        class="feather-calendar"></i></div>
+                                <div class="flex-fill">
+                                    <div class="fw-bold text-dark fs-13">Follow up scheduled</div>
+                                    <div class="text-muted fs-12">Priya Patel</div>
+                                </div>
+                                <div class="text-muted fs-11 flex-shrink-0">17 Aug 2026, 04:15 PM</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-text bg-soft-purple text-purple rounded-circle flex-shrink-0"><i
+                                        class="feather-calendar"></i></div>
+                                <div class="flex-fill">
+                                    <div class="fw-bold text-dark fs-13">Follow up scheduled</div>
+                                    <div class="text-muted fs-12">Priya Patel</div>
+                                </div>
+                                <div class="text-muted fs-11 flex-shrink-0">17 Aug 2026, 04:15 PM</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-text bg-soft-warning text-warning rounded-circle flex-shrink-0"><i
+                                        class="feather-file-text"></i></div>
+                                <div class="flex-fill">
+                                    <div class="fw-bold text-dark fs-13">Document uploaded</div>
+                                    <div class="text-muted fs-12">Kishore Kumar</div>
+                                </div>
+                                <div class="text-muted fs-11 flex-shrink-0">17 Aug 2026, 11:20 AM</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-text bg-soft-info text-info rounded-circle flex-shrink-0"><i
+                                        class="feather-edit"></i></div>
+                                <div class="flex-fill">
+                                    <div class="fw-bold text-dark fs-13">Client updated</div>
+                                    <div class="text-muted fs-12">Suman Pappula</div>
+                                </div>
+                                <div class="text-muted fs-11 flex-shrink-0">16 Aug 2026, 02:35 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. RECENT CLIENTS TABLE & UPCOMING FOLLOW UPS SIDE WIDGET -->
+            <section class="row g-4">
+                <div class="col-xl-8 col-lg-12">
+                    <div class="card-widget">
+                        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                            <div>
+                                <h6 class="widget-title mb-2">Recent Clients</h6>
+                                <ul class="nav nav-tabs border-bottom-0" id="recentClientsTabs">
+                                    <li class="nav-item">
+                                        <button class="nav-link active px-3 py-1 fs-13 fw-semibold" data-bs-toggle="tab"
+                                            data-filter="all">All Clients</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link px-3 py-1 fs-13 fw-semibold" data-bs-toggle="tab"
+                                            data-filter="Inforce">Inforce Clients</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link px-3 py-1 fs-13 fw-semibold" data-bs-toggle="tab"
+                                            data-filter="Inactive">Inactive Clients</button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <a href="clients.html" class="fs-12 text-primary fw-bold text-decoration-none">View All
+                                Clients</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle w-100" id="recentClientsTable">
+                                <thead>
+                                    <tr class="fs-12 text-muted text-uppercase fw-semibold"
+                                        style="background: #F8FAFC;">
+                                        <th>Client Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Status</th>
+                                        <th>Source</th>
+                                        <th class="text-center">Policies</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-status="Inforce">
+                                        <td class="fw-bold text-dark fs-13">Kishore Kumar</td>
+                                        <td class="fs-13 text-muted">021 123 4567</td>
+                                        <td><span class="status-pill-inforce">Inforce</span></td>
+                                        <td class="fs-13 text-muted">Referral</td>
+                                        <td class="fs-13 fw-semibold text-dark text-center">3</td>
+                                        <td class="text-center">
+                                            <div class="action-kebab-wrapper">
+                                                <button class="action-kebab-btn"><i
+                                                        class="feather-more-vertical"></i></button>
+                                                <div class="action-kebab-dropdown">
+                                                    <a href="clients.html" class="action-kebab-item"><i
+                                                            class="feather-eye text-primary me-1"></i> View Client
+                                                        Profile</a>
+                                                    <a href="policies.html" class="action-kebab-item"><i
+                                                            class="feather-file-text me-1"></i> View Policies</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-status="Inforce">
+                                        <td class="fw-bold text-dark fs-13">Rahul Sharma</td>
+                                        <td class="fs-13 text-muted">021 555 6677</td>
+                                        <td><span class="status-pill-inforce">Inforce</span></td>
+                                        <td class="fs-13 text-muted">Broker / Partner</td>
+                                        <td class="fs-13 fw-semibold text-dark text-center">4</td>
+                                        <td class="text-center">
+                                            <div class="action-kebab-wrapper">
+                                                <button class="action-kebab-btn"><i
+                                                        class="feather-more-vertical"></i></button>
+                                                <div class="action-kebab-dropdown">
+                                                    <a href="clients.html" class="action-kebab-item"><i
+                                                            class="feather-eye text-primary me-1"></i> View Client
+                                                        Profile</a>
+                                                    <a href="policies.html" class="action-kebab-item"><i
+                                                            class="feather-file-text me-1"></i> View Policies</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-status="Inforce">
+                                        <td class="fw-bold text-dark fs-13">Suman Pappula</td>
+                                        <td class="fs-13 text-muted">021 987 6543</td>
+                                        <td><span class="status-pill-inforce">Inforce</span></td>
+                                        <td class="fs-13 text-muted">Existing Client</td>
+                                        <td class="fs-13 fw-semibold text-dark text-center">2</td>
+                                        <td class="text-center">
+                                            <div class="action-kebab-wrapper">
+                                                <button class="action-kebab-btn"><i
+                                                        class="feather-more-vertical"></i></button>
+                                                <div class="action-kebab-dropdown">
+                                                    <a href="clients.html" class="action-kebab-item"><i
+                                                            class="feather-eye text-primary me-1"></i> View Client
+                                                        Profile</a>
+                                                    <a href="policies.html" class="action-kebab-item"><i
+                                                            class="feather-file-text me-1"></i> View Policies</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-status="Inactive">
+                                        <td class="fw-bold text-dark fs-13">Vandana Singh</td>
+                                        <td class="fs-13 text-muted">022 345 6789</td>
+                                        <td><span class="status-pill-inactive">Inactive</span></td>
+                                        <td class="fs-13 text-muted">Online / Website</td>
+                                        <td class="fs-13 fw-semibold text-dark text-center">1</td>
+                                        <td class="text-center">
+                                            <div class="action-kebab-wrapper">
+                                                <button class="action-kebab-btn"><i
+                                                        class="feather-more-vertical"></i></button>
+                                                <div class="action-kebab-dropdown">
+                                                    <a href="clients.html" class="action-kebab-item"><i
+                                                            class="feather-eye text-primary me-1"></i> View Client
+                                                        Profile</a>
+                                                    <a href="policies.html" class="action-kebab-item"><i
+                                                            class="feather-file-text me-1"></i> View Policies</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-status="Inactive">
+                                        <td class="fw-bold text-dark fs-13">Neha Gupta</td>
+                                        <td class="fs-13 text-muted">027 654 3210</td>
+                                        <td><span class="status-pill-inactive">Inactive</span></td>
+                                        <td class="fs-13 text-muted">Referral</td>
+                                        <td class="fs-13 fw-semibold text-dark text-center">1</td>
+                                        <td class="text-center">
+                                            <div class="action-kebab-wrapper">
+                                                <button class="action-kebab-btn"><i
+                                                        class="feather-more-vertical"></i></button>
+                                                <div class="action-kebab-dropdown">
+                                                    <a href="clients.html" class="action-kebab-item"><i
+                                                            class="feather-eye text-primary me-1"></i> View Client
+                                                        Profile</a>
+                                                    <a href="policies.html" class="action-kebab-item"><i
+                                                            class="feather-file-text me-1"></i> View Policies</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-12">
+                    <div class="card-widget h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="widget-title mb-0">Upcoming Follow Ups</h6>
+                            <a href="calendar.html" class="fs-12 text-primary fw-bold text-decoration-none">View
+                                Calendar</a>
+                        </div>
+                        <div class="d-flex flex-column gap-3">
+                            <div
+                                class="d-flex align-items-center justify-content-between p-2 rounded hover-bg-light border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="feather-user text-muted fs-14"></i>
+                                    <span class="fw-bold text-dark fs-13">Kishore Kumar</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="fs-12 text-muted fw-semibold">18 Aug 2026</span>
+                                    <i class="feather-phone text-muted fs-13"></i>
+                                </div>
+                            </div>
+                            <div
+                                class="d-flex align-items-center justify-content-between p-2 rounded hover-bg-light border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="feather-user text-muted fs-14"></i>
+                                    <span class="fw-bold text-dark fs-13">Vandana Singh</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="fs-12 text-muted fw-semibold">19 Aug 2026</span>
+                                    <i class="feather-phone text-muted fs-13"></i>
+                                </div>
+                            </div>
+                            <div
+                                class="d-flex align-items-center justify-content-between p-2 rounded hover-bg-light border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="feather-user text-muted fs-14"></i>
+                                    <span class="fw-bold text-dark fs-13">Ravi Mehta</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="fs-12 text-muted fw-semibold">20 Aug 2026</span>
+                                    <i class="feather-mail text-muted fs-13"></i>
+                                </div>
+                            </div>
+                            <div
+                                class="d-flex align-items-center justify-content-between p-2 rounded hover-bg-light border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="feather-user text-muted fs-14"></i>
+                                    <span class="fw-bold text-dark fs-13">Neha Gupta</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="fs-12 text-muted fw-semibold">21 Aug 2026</span>
+                                    <i class="feather-mail text-muted fs-13"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between p-2 rounded hover-bg-light">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="feather-user text-muted fs-14"></i>
+                                    <span class="fw-bold text-dark fs-13">Arjun Verma</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="fs-12 text-muted fw-semibold">22 Aug 2026</span>
+                                    <i class="feather-mail text-muted fs-13"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. BOTTOM METRIC CARDS ROW (STANDARD BOOTSTRAP GRID - NO OVERLAP) -->
+            <section class="row g-3">
+                <div class="col-xl-3 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-purple"><i class="feather-user-plus"></i></div>
+                        <div class="flex-fill">
+                            <div class="kpi-label">New Clients (This Month)</div>
+                            <div class="d-flex align-items-baseline gap-2">
+                                <span class="kpi-val">42</span>
+                                <span class="kpi-badge text-success"><i class="feather-arrow-up-right"></i> ↑
+                                    12.3%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-green"><i class="feather-file-text"></i></div>
+                        <div class="flex-fill">
+                            <div class="kpi-label">Policies Issued (This Month)</div>
+                            <div class="d-flex align-items-baseline gap-2">
+                                <span class="kpi-val">68</span>
+                                <span class="kpi-badge text-success"><i class="feather-arrow-up-right"></i> ↑
+                                    15.6%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle bg-danger text-white"><i class="feather-shield-off"></i></div>
+                        <div class="flex-fill">
+                            <div class="kpi-label">Claims Lodged (This Month)</div>
+                            <div class="d-flex align-items-baseline gap-2">
+                                <span class="kpi-val">11</span>
+                                <span class="kpi-badge text-danger"><i class="feather-arrow-down-right"></i> ↓
+                                    8.3%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 col-sm-12">
+                    <div class="kpi-stat-card">
+                        <div class="kpi-icon-circle kpi-icon-yellow"><i class="feather-check-square"></i></div>
+                        <div class="flex-fill">
+                            <div class="kpi-label">Pending Tasks</div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="kpi-val">27</span>
+                                <a href="tasks.html" class="fs-12 text-primary fw-bold text-decoration-none">View
+                                    all</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- RESPONSIVE FOOTER (DEVELOPED BY SITESOCH) -->
+        <footer class="nxl-footer">
+            <div
+                class="d-flex align-items-center justify-content-between flex-wrap gap-2 py-3 px-4 fs-12 text-muted border-top bg-white">
+                <div>© 2026 <span class="fw-bold text-dark">SS Advisory Lead Engine</span>. All Rights Reserved.</div>
+                <div>Developed with <i class="feather-heart text-danger mx-1"></i> by <a href="https://sitesoch.com"
+                        target="_blank" class="fw-bold text-primary text-decoration-none">Sitesoch</a></div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Modal: Reset Password -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background-color: var(--color-navy-dark);">
+                    <h5 class="modal-title text-white mb-0"><i class="feather-key me-2"></i> Reset Advisor Password</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form id="resetPasswordForm"
+                    onsubmit="event.preventDefault(); alert('Password updated successfully!'); $('#resetPasswordModal').modal('hide');">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold fs-13 text-dark">Current Password *</label>
+                            <input type="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold fs-13 text-dark">New Password *</label>
+                            <input type="password" class="form-control" placeholder="Minimum 8 characters" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold fs-13 text-dark">Confirm New Password *</label>
+                            <input type="password" class="form-control" placeholder="Repeat new password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm fw-bold">Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Logout Confirmation -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-body p-4 text-center">
+                    <div class="avatar-text avatar-lg bg-soft-danger text-danger rounded-circle mx-auto mb-3"
+                        style="width: 50px; height: 50px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="feather-log-out fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Confirm Logout</h5>
+                    <p class="text-muted fs-13 mb-4">Are you sure you want to log out of your session?</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger btn-sm px-4 fw-bold"
+                            onclick="window.location.href='login.html'">Yes, Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Vendor & Init Files -->
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/vendors/js/nxlNavigation.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="assets/vendors/js/apexcharts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/script.js?v=1.3"></script>
+
+    <script src="assets/js/dashboard-redesign.js?v=10.0"></script>
+</body>
+
+</html>
