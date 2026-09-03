@@ -49,10 +49,7 @@
     <div class="tab-pane fade show active" id="usersTabContent" role="tabpanel">
         <div class="card-widget">
             <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                <h6 class="widget-title mb-0">
-                    Advisor Directory
-                    <span class="badge bg-soft-primary text-primary ms-1 fs-11">{{ $users->count() }}</span>
-                </h6>
+                <h6 class="widget-title mb-0">Advisor Directory</h6>
                 @if(auth()->user()->isSuperAdmin())
                     <button class="btn btn-primary btn-sm px-3 fw-bold"
                         data-bs-toggle="modal" data-bs-target="#addUserModal">
@@ -65,31 +62,20 @@
                 <table class="table table-hover align-middle w-100" id="usersTable">
                     <thead>
                         <tr class="fs-12 text-muted text-uppercase fw-semibold">
-                            <th>User</th>
+                            <th>User Name</th>
+                            <th>Email Address</th>
                             <th>Role Assigned</th>
                             <th>FSPR Number</th>
                             <th>Status</th>
                             <th>Last Login</th>
-                            @if(auth()->user()->isSuperAdmin())
-                                <th class="text-center">Action</th>
-                            @endif
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($users as $user)
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="avatar-text avatar-sm rounded-circle fw-bold fs-12"
-                                            style="width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;background:var(--color-navy-dark,#1e3a5f);color:#fff;flex-shrink:0;">
-                                            {{ strtoupper(substr($user->name, 0, 2)) }}
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold text-dark fs-13">{{ $user->name }}</div>
-                                            <div class="text-muted fs-12">{{ $user->email }}</div>
-                                        </div>
-                                    </div>
-                                </td>
+                                <td class="fw-bold text-dark fs-13">{{ $user->name }}</td>
+                                <td class="fs-13 text-muted">{{ $user->email }}</td>
                                 <td>
                                     @if($user->role)
                                         <span class="badge {{ $user->role->is_super_admin ? 'bg-soft-primary text-primary' : 'bg-soft-info text-info' }} fs-11 fw-bold">
@@ -99,19 +85,19 @@
                                         <span class="badge bg-soft-secondary text-secondary fs-11">No Role</span>
                                     @endif
                                 </td>
-                                <td class="fs-13 fw-semibold text-muted">{{ $user->fspr_number ?? '—' }}</td>
+                                <td class="fs-13 fw-semibold">{{ $user->fspr_number ?? '—' }}</td>
                                 <td>
                                     @if($user->status === 'active')
                                         <span class="status-pill-inforce">Active</span>
                                     @else
-                                        <span class="badge bg-soft-danger text-danger fs-11 fw-semibold px-2 py-1">Inactive</span>
+                                        <span class="badge bg-soft-danger text-danger fs-11 fw-semibold">Inactive</span>
                                     @endif
                                 </td>
-                                <td class="fs-12 text-muted">
+                                <td class="fs-13 text-muted">
                                     {{ $user->last_login_at ? $user->last_login_at->format('d M Y, h:i A') : 'Never' }}
                                 </td>
-                                @if(auth()->user()->isSuperAdmin())
-                                    <td class="text-center">
+                                <td class="text-center">
+                                    @if(auth()->user()->isSuperAdmin())
                                         <div class="action-kebab-wrapper">
                                             <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
                                             <div class="action-kebab-dropdown">
@@ -124,7 +110,7 @@
                                                         <form method="POST" action="{{ route('users.deactivate', $user) }}"
                                                             onsubmit="return confirm('Deactivate {{ addslashes($user->name) }}? Their session will be terminated.');">
                                                             @csrf @method('PATCH')
-                                                            <button type="submit" class="action-kebab-item text-danger w-100 text-start border-0 bg-transparent px-3 py-2">
+                                                            <button type="submit" class="action-kebab-item text-danger w-100 text-start border-0 bg-transparent">
                                                                 <i class="feather-user-x text-danger me-1"></i> Deactivate
                                                             </button>
                                                         </form>
@@ -132,7 +118,7 @@
                                                         <form method="POST" action="{{ route('users.update', $user) }}">
                                                             @csrf @method('PATCH')
                                                             <input type="hidden" name="status" value="active">
-                                                            <button type="submit" class="action-kebab-item text-success w-100 text-start border-0 bg-transparent px-3 py-2">
+                                                            <button type="submit" class="action-kebab-item text-success w-100 text-start border-0 bg-transparent">
                                                                 <i class="feather-user-check text-success me-1"></i> Activate
                                                             </button>
                                                         </form>
@@ -140,15 +126,12 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </td>
-                                @endif
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ auth()->user()->isSuperAdmin() ? 6 : 5 }}" class="text-center text-muted py-5 fs-13">
-                                    <i class="feather-users fs-1 d-block mb-2 text-muted opacity-50"></i>
-                                    No users found.
-                                </td>
+                                <td colspan="7" class="text-center text-muted py-4 fs-13">No users found.</td>
                             </tr>
                         @endforelse
                     </tbody>
