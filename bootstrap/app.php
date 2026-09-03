@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\CheckUserActive;
+use App\Http\Middleware\RequirePermission;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,7 +14,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Redirect unauthenticated users to /login
+        $middleware->redirectGuestsTo(fn () => route('login'));
+        // Redirect authenticated users away from guest routes to /dashboard
+        $middleware->redirectUsersTo(fn () => route('dashboard'));
+
+        // Custom middleware aliases
+        $middleware->alias([
+            'user.active' => CheckUserActive::class,
+            'permission' => RequirePermission::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -45,8 +45,10 @@
                     <p class="text-muted fs-13 mb-4">Are you sure you want to log out of your session?</p>
                     <div class="d-flex gap-2 justify-content-center">
                         <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger btn-sm px-4 fw-bold"
-                            onclick="window.location.href='{{ url('auth/login') }}'">Yes, Logout</button>
+                        <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                            @csrf
+                            <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold">Yes, Logout</button>
+                        </form>
                     </div>
                 </div>
             </div>
