@@ -53,15 +53,19 @@
                             <img src="{{ asset('assets/images/user-avatar.svg') }}" alt="User Avatar" />
                         </div>
                         <div class="d-none d-md-block text-start">
-                            <div class="fs-13 fw-bold text-dark mb-0" style="line-height: 1.1;">Admin User <i
-                                    class="feather-chevron-down ms-1 fs-11 text-muted"></i></div>
-                            <div class="fs-11 text-muted fw-semibold">Administrator</div>
+                            <div class="fs-13 fw-bold text-dark mb-0" style="line-height: 1.1;">
+                                {{ auth()->user()?->name ?? 'User' }}
+                                <i class="feather-chevron-down ms-1 fs-11 text-muted"></i>
+                            </div>
+                            <div class="fs-11 text-muted fw-semibold">
+                                {{ auth()->user()?->role?->name ?? (auth()->user()?->isSuperAdmin() ? 'Super Administrator' : 'User') }}
+                            </div>
                         </div>
                     </div>
                     <div class="header-user-dropdown">
                         <div class="px-3 py-2 border-bottom mb-1">
-                            <div class="fw-bold text-dark fs-13">Admin User</div>
-                            <div class="fs-11 text-muted">admin@ssadvisory.co.nz</div>
+                            <div class="fw-bold text-dark fs-13">{{ auth()->user()?->name ?? 'User' }}</div>
+                            <div class="fs-11 text-muted">{{ auth()->user()?->email ?? '' }}</div>
                         </div>
                         <button class="user-dropdown-item" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
                             <i class="feather-key text-primary me-2"></i> Reset Password
