@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Crm\ClientController;
+use App\Http\Controllers\Crm\LeadController;
+use App\Http\Controllers\Crm\PolicyController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Auth Routes ──────────────────────────────────────────────────────────────
@@ -33,16 +36,10 @@ Route::middleware(['auth', 'user.active'])->group(function () {
 
     // CRM / Leads
     Route::middleware('permission:leads,read')->group(function () {
-        Route::get('/crm/pipeline', function () {
-            return view('pages.crm.pipeline');
-        });
-        Route::get('/crm/create', function () {
-            return view('pages.crm.create');
-        });
-    });
-
-    // Reports
-    Route::middleware('permission:reports,read')->group(function () {
+        Route::get('/crm/pipeline', [LeadController::class, 'index'])->name('crm.pipeline');
+        Route::get('/crm/create', [LeadController::class, 'create'])->name('crm.create');
+        Route::post('/crm/leads', [LeadController::class, 'store'])->name('crm.store');
+        Route::post('/crm/leads/{lead}/convert', [LeadController::class, 'convert'])->name('crm.convert');
         Route::get('/crm/reports', function () {
             return view('pages.crm.reports');
         });
@@ -50,28 +47,13 @@ Route::middleware(['auth', 'user.active'])->group(function () {
 
     // Clients
     Route::middleware('permission:clients,read')->group(function () {
-        Route::get('/clients', function () {
-            return view('pages.clients.index');
-        });
-        Route::get('/clients/inforce', function () {
-            return view('pages.clients.inforce');
-        });
-        Route::get('/clients/inactive', function () {
-            return view('pages.clients.inactive');
-        });
-        Route::get('/clients/cancellation', function () {
-            return view('pages.clients.cancellation');
-        });
-        Route::get('/clients/npw-deferred', function () {
-            return view('pages.clients.npw-deferred');
-        });
+        Route::get('/clients/{status?}', [ClientController::class, 'index'])->name('clients.index');
     });
 
     // Policies & Claims
     Route::middleware('permission:policies,read')->group(function () {
-        Route::get('/policies', function () {
-            return view('pages.policies.index');
-        });
+        Route::get('/policies', [PolicyController::class, 'index'])->name('policies.index');
+        Route::post('/policies', [PolicyController::class, 'store'])->name('policies.store');
     });
     Route::middleware('permission:claims,read')->group(function () {
         Route::get('/policies/claims', function () {

@@ -2,40 +2,54 @@
 @section('title', 'Create New Lead')
 @section('content')
 <div class="card-widget p-4">
-                <form onsubmit="event.preventDefault(); window.location.href='crm-leads-pipeline.html';">
+                <form action="{{ route('crm.store') }}" method="POST">
+                    @csrf
                     <h5 class="fw-bold text-dark mb-3">Prospect Lead Details</h5>
+                    
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold fs-13 text-dark">First Name *</label>
-                            <input type="text" class="form-control" required placeholder="e.g. Jason">
+                            <input type="text" name="first_name" class="form-control" required placeholder="e.g. Jason" value="{{ old('first_name') }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold fs-13 text-dark">Last Name *</label>
-                            <input type="text" class="form-control" required placeholder="e.g. Taylor">
+                            <input type="text" name="last_name" class="form-control" required placeholder="e.g. Taylor" value="{{ old('last_name') }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold fs-13 text-dark">Email Address *</label>
-                            <input type="email" class="form-control" required placeholder="jason@example.com">
+                            <input type="email" name="email" class="form-control" placeholder="jason@example.com" value="{{ old('email') }}">
+                            <small class="text-muted">Required if phone is not provided.</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold fs-13 text-dark">Phone Number *</label>
-                            <input type="text" class="form-control" required placeholder="021 555 9988">
+                            <input type="text" name="phone" class="form-control" placeholder="021 555 9988" value="{{ old('phone') }}">
+                            <small class="text-muted">Required if email is not provided.</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold fs-13 text-dark">Acquisition Source</label>
-                            <select class="form-select">
-                                <option>Meta Leads</option>
-                                <option>Door to Door</option>
-                                <option>Google Ads</option>
-                                <option>Referral</option>
+                            <select name="lead_source_id" class="form-select">
+                                <option value="">Select a source</option>
+                                @foreach($leadSources as $source)
+                                    <option value="{{ $source->id }}" @selected(old('lead_source_id') == $source->id)>{{ $source->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold fs-13 text-dark">Estimated Cover ($)</label>
-                            <input type="number" class="form-control" placeholder="500000">
+                            <input type="number" name="estimated_cover" class="form-control" placeholder="500000" value="{{ old('estimated_cover') }}">
                         </div>
                         <div class="col-12 text-end mt-4">
-                            <a href="crm-leads-pipeline.html" class="btn btn-light me-2">Cancel</a>
+                            <a href="{{ route('crm.pipeline') }}" class="btn btn-light me-2">Cancel</a>
                             <button type="submit" class="btn btn-primary fw-bold px-4">Create Lead</button>
                         </div>
                     </div>

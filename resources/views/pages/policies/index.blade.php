@@ -27,18 +27,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr data-insurer="AIA New Zealand" data-type="Life & Disability">
-                                <td class="fw-bold text-dark fs-13">POL-2026-8812</td>
-                                <td class="fs-13">Kishore Kumar</td>
-                                <td class="fs-13">AIA New Zealand</td>
-                                <td class="fs-13"><span class="badge bg-soft-primary text-primary">Life & Disability</span></td>
-                                <td class="fs-13 fw-semibold">$1,000,000</td>
-                                <td class="fs-13 fw-semibold text-success">$3,420</td>
-                                <td class="fs-13 text-muted">15 Sep 2026</td>
-                                <td><span class="status-pill-inforce">Active</span></td>
+                            @forelse($policies as $policy)
+                            <tr data-insurer="{{ $policy->insurer->name ?? 'Unknown' }}" data-type="{{ $policy->cover_type }}">
+                                <td class="fw-bold text-dark fs-13">{{ $policy->policy_number }}</td>
+                                <td class="fs-13">{{ $policy->client->first_name ?? '' }} {{ $policy->client->last_name ?? '' }}</td>
+                                <td class="fs-13">{{ $policy->insurer->name ?? 'Unknown' }}</td>
+                                <td class="fs-13"><span class="badge bg-soft-primary text-primary">{{ $policy->cover_type ?? 'N/A' }}</span></td>
+                                <td class="fs-13 fw-semibold">${{ number_format($policy->sum_assured, 0) }}</td>
+                                <td class="fs-13 fw-semibold text-success">${{ number_format($policy->annual_premium, 0) }}</td>
+                                <td class="fs-13 text-muted">{{ $policy->renewal_date ? \Carbon\Carbon::parse($policy->renewal_date)->format('d M Y') : 'N/A' }}</td>
+                                <td>
+                                    @if($policy->status == 'Active')
+                                        <span class="status-pill-inforce">Active</span>
+                                    @elseif($policy->status == 'Inactive')
+                                        <span class="status-pill-inactive">Inactive</span>
+                                    @else
+                                        <span class="status-pill-cancellation">Cancelled</span>
+                                    @endif
+                                </td>
                                 <td class="text-center"><button class="btn btn-sm btn-light py-1 px-2">Manage</button></td>
                             </tr>
-                        </tbody>
+                            @empty
+                            <tr>
+                                <td colspan="9" class="text-center py-4 text-muted">No policies found.</td>
+                            </tr>
+                            @endforelse
+</tbody>
                     </table>
                 </div>
             
@@ -54,20 +68,26 @@
                     <h5 class="modal-title text-white mb-0"><i class="feather-file-text me-2"></i> Issue New Policy</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="newPolicyForm" onsubmit="event.preventDefault(); handleIssueNewPolicy();">
+                <form id="newPolicyForm" action="{{ route('policies.store') }}" method="POST">
+                    @csrf
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label fw-semibold fs-13 text-dark">Policy Holder Name *</label>
-                            <input type="text" class="form-control" id="policyHolderInput" placeholder="Select or type client name" required>
+                            <select class="form-select" id="policyHolderInput" name="client_id" required>
+                                    <option value="" selected disabled>Select a client...</option>
+                                    @foreach($clients as $client)
+                                        <option value="{{ $client->id }}">{{ $client->first_name }} {{ $client->last_name }}</option>
+                                    @endforeach
+                                </select>
                         </div>
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label fw-semibold fs-13 text-dark">Policy Number *</label>
-                                <input type="text" class="form-control" id="policyNumberInput" placeholder="POL-2026-XXXX" required>
+                                <input type="text" class="form-control" id="policyNumberInput" name="policy_number" placeholder="POL-2026-XXXX" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label fw-semibold fs-13 text-dark">Underwriter Insurer</label>
-                                <select class="form-select" id="policyInsurerInput">
+                                <select class="form-select" id="policyInsurerInput" name="insurer_id">
                                     <option value="AIA New Zealand">AIA New Zealand</option>
                                     <option value="Partners Life">Partners Life</option>
                                     <option value="Chubb Life">Chubb Life</option>
@@ -77,11 +97,11 @@
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label fw-semibold fs-13 text-dark">Sum Assured ($)</label>
-                                <input type="number" class="form-control" id="policySumInput" placeholder="e.g. 500000">
+                                <input type="number" class="form-control" id="policySumInput" name="sum_assured" placeholder="e.g. 500000">
                             </div>
                             <div class="col-6">
                                 <label class="form-label fw-semibold fs-13 text-dark">Annual Premium ($)</label>
-                                <input type="number" class="form-control" id="policyPremiumInput" placeholder="e.g. 2400">
+                                <input type="number" class="form-control" id="policyPremiumInput" name="annual_premium" placeholder="e.g. 2400">
                             </div>
                         </div>
                     </div>
