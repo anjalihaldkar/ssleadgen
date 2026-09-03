@@ -399,100 +399,47 @@
 
     {{-- ─── Modal: Add New System User ─────────────────────────────────────── --}}
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
-            <div class="modal-content border-0 shadow-lg overflow-hidden">
-                <div class="modal-header border-0 pb-0 px-4 pt-4" style="background:#f8faff;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                            style="width:42px;height:42px;background:linear-gradient(135deg,#4f46e5,#7c3aed);">
-                            <i class="feather-user-plus text-white"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold text-dark mb-0 fs-15">Add New System User</h5>
-                            <p class="text-muted fs-12 mb-0">Create an account and assign a role</p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background-color: var(--color-navy-dark, #0B192C);">
+                    <h5 class="modal-title text-white mb-0"><i class="feather-user-plus me-2"></i> Add New System User</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <form method="POST" action="{{ route('users.store') }}">
                     @csrf
-                    <div class="modal-body px-4 py-3">
+                    <div class="modal-body p-4">
                         <div class="mb-3">
-                            <label class="form-label fw-semibold fs-13 text-dark" for="add-user-name">
-                                Full Name <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="feather-user text-muted fs-14"></i>
-                                </span>
-                                <input type="text" id="add-user-name" name="name"
-                                    class="form-control border-start-0 @error('name') is-invalid @enderror"
-                                    value="{{ old('name') }}"
-                                    placeholder="e.g. Sushant Yadav" required>
-                                @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
+                            <label class="form-label fw-semibold fs-13 text-dark">User Full Name *</label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" placeholder="e.g. Sushant Yadav" required>
+                            @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-
                         <div class="mb-3">
-                            <label class="form-label fw-semibold fs-13 text-dark" for="add-user-email">
-                                Email Address <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="feather-mail text-muted fs-14"></i>
-                                </span>
-                                <input type="email" id="add-user-email" name="email"
-                                    class="form-control border-start-0 @error('email') is-invalid @enderror"
-                                    value="{{ old('email') }}"
-                                    placeholder="user@ssadvisory.co.nz" required>
-                                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
+                            <label class="form-label fw-semibold fs-13 text-dark">Email Address *</label>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="user@ssadvisory.co.nz" required>
+                            @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-7">
-                                <label class="form-label fw-semibold fs-13 text-dark" for="add-user-role">
-                                    Role Assigned <span class="text-danger">*</span>
-                                </label>
-                                <select id="add-user-role" name="role_id"
-                                    class="form-select @error('role_id') is-invalid @enderror" required>
-                                    <option value="">Select role…</option>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold fs-13 text-dark">Role Assigned</label>
+                                <select class="form-select @error('role_id') is-invalid @enderror" name="role_id" required>
                                     @foreach($roles as $role)
-                                        <option value="{{ $role->id }}"
-                                            {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                                        <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
                                             {{ $role->name }}
                                         </option>
                                     @endforeach
                                 </select>
                                 @error('role_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-                            <div class="col-5">
-                                <label class="form-label fw-semibold fs-13 text-dark" for="add-user-fspr">
-                                    FSPR Number
-                                </label>
-                                <input type="text" id="add-user-fspr" name="fspr_number"
-                                    class="form-control @error('fspr_number') is-invalid @enderror"
-                                    value="{{ old('fspr_number') }}"
-                                    placeholder="FSP-XXXXXX">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold fs-13 text-dark">FSPR Number</label>
+                                <input type="text" class="form-control @error('fspr_number') is-invalid @enderror" name="fspr_number" value="{{ old('fspr_number') }}" placeholder="FSP-XXXXXX">
                                 @error('fspr_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
-
-                        <div class="rounded-3 p-3 fs-12 text-muted d-flex gap-2 align-items-start"
-                            style="background:#f0f4ff;border:1px dashed #c7d2fe;">
-                            <i class="feather-info text-primary mt-1 flex-shrink-0"></i>
-                            <span>The user will be created as <strong>Active</strong>. Ask them to use
-                                <strong>Forgot Password</strong> on the login page to set their password.</span>
-                        </div>
                     </div>
-
-                    <div class="modal-footer px-4 py-3 border-top bg-light">
-                        <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" id="btn-create-user"
-                            class="btn btn-primary btn-sm px-4 fw-bold">
-                            <i class="feather-user-plus me-1"></i> Create User Account
-                        </button>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm fw-bold">Create User Account</button>
                     </div>
                 </form>
             </div>
