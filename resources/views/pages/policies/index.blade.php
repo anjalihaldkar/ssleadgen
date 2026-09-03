@@ -6,7 +6,9 @@
                     <h4 class="fw-bold text-dark mb-1">Active Policy Portfolio (2,134 Policies)</h4>
                     <p class="text-muted fs-13 mb-0">Track policy terms, insured amounts, renewal dates, and underwriter details.</p>
                 </div>
-                <button class="btn btn-primary btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#newPolicyModal"><i class="feather-plus me-1"></i> Issue New Policy</button>
+                @if(auth()->user()->canWrite('policies'))
+                    <button class="btn btn-primary btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#newPolicyModal"><i class="feather-plus me-1"></i> Issue New Policy</button>
+                @endif
             </div>
 
             <!-- Policy Table -->
@@ -45,7 +47,13 @@
                                         <span class="status-pill-cancellation">Cancelled</span>
                                     @endif
                                 </td>
-                                <td class="text-center"><button class="btn btn-sm btn-light py-1 px-2">Manage</button></td>
+                                <td class="text-center">
+                                    @if(auth()->user()->canWrite('policies'))
+                                        <button class="btn btn-sm btn-light py-1 px-2">Manage</button>
+                                    @else
+                                        <span class="text-muted fs-12">View Only</span>
+                                    @endif
+                                </td>
                             </tr>
                             @empty
                             <tr>

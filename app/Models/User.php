@@ -69,4 +69,14 @@ class User extends Authenticatable
 
         return $this->role?->can($module, $level) ?? false;
     }
+
+    public function canWrite(string $module): bool
+    {
+        return $this->hasPermission($module, 'write');
+    }
+
+    public function canRead(string $module): bool
+    {
+        return $this->hasPermission($module, 'read');
+    }
 }

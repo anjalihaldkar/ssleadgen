@@ -37,11 +37,13 @@ Route::middleware(['auth', 'user.active'])->group(function () {
     // CRM / Leads
     Route::middleware('permission:leads,read')->group(function () {
         Route::get('/crm/pipeline', [LeadController::class, 'index'])->name('crm.pipeline');
-        Route::get('/crm/create', [LeadController::class, 'create'])->name('crm.create');
-        Route::post('/crm/leads', [LeadController::class, 'store'])->name('crm.store');
-        Route::post('/crm/leads/{lead}/convert', [LeadController::class, 'convert'])->name('crm.convert');
         Route::get('/crm/reports', function () {
             return view('pages.crm.reports');
+        });
+        Route::middleware('permission:leads,write')->group(function () {
+            Route::get('/crm/create', [LeadController::class, 'create'])->name('crm.create');
+            Route::post('/crm/leads', [LeadController::class, 'store'])->name('crm.store');
+            Route::post('/crm/leads/{lead}/convert', [LeadController::class, 'convert'])->name('crm.convert');
         });
     });
 
@@ -53,7 +55,9 @@ Route::middleware(['auth', 'user.active'])->group(function () {
     // Policies & Claims
     Route::middleware('permission:policies,read')->group(function () {
         Route::get('/policies', [PolicyController::class, 'index'])->name('policies.index');
-        Route::post('/policies', [PolicyController::class, 'store'])->name('policies.store');
+        Route::middleware('permission:policies,write')->group(function () {
+            Route::post('/policies', [PolicyController::class, 'store'])->name('policies.store');
+        });
     });
     Route::middleware('permission:claims,read')->group(function () {
         Route::get('/policies/claims', function () {
@@ -94,14 +98,17 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         });
     });
 
-    // ─── Access Control (Super Admin only) ───────────────────────────────────
-    Route::middleware('permission:access,write')->group(function () {
+    // ─── Access Control ──────────────────────────────────────────────────────
+    Route::middleware('permission:access,read')->group(function () {
         Route::get('/settings/access', [UserController::class, 'index'])->name('settings.access');
-        Route::post('/settings/users', [UserController::class, 'store'])->name('users.store');
-        Route::patch('/settings/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::patch('/settings/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
-        Route::post('/settings/roles', [UserController::class, 'storeRole'])->name('roles.store');
-        Route::patch('/settings/roles/{role}', [UserController::class, 'updateRole'])->name('roles.update');
+
+        Route::middleware('permission:access,write')->group(function () {
+            Route::post('/settings/users', [UserController::class, 'store'])->name('users.store');
+            Route::patch('/settings/users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::patch('/settings/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
+            Route::post('/settings/roles', [UserController::class, 'storeRole'])->name('roles.store');
+            Route::patch('/settings/roles/{role}', [UserController::class, 'updateRole'])->name('roles.update');
+        });
     });
 });
 

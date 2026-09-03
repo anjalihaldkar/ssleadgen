@@ -12,8 +12,10 @@
                         <button type="button" class="btn btn-primary fw-bold" onclick="switchLeadView('kanban', this)"><i class="feather-columns me-1"></i> Kanban</button>
                         <button type="button" class="btn btn-outline-primary fw-bold" onclick="switchLeadView('list', this)"><i class="feather-list me-1"></i> List View</button>
                     </div>
-                    <button class="btn btn-light btn-sm px-3 fw-bold text-success border-success" data-bs-toggle="modal" data-bs-target="#importLeadsModal"><i class="feather-upload me-1"></i> Import Leads</button>
-                    <button class="btn btn-primary btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#createLeadModal"><i class="feather-plus me-1"></i> Add Lead</button>
+                    @if(auth()->user()->canWrite('leads'))
+                        <button class="btn btn-light btn-sm px-3 fw-bold text-success border-success" data-bs-toggle="modal" data-bs-target="#importLeadsModal"><i class="feather-upload me-1"></i> Import Leads</button>
+                        <button class="btn btn-primary btn-sm px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#createLeadModal"><i class="feather-plus me-1"></i> Add Lead</button>
+                    @endif
                 </div>
             </div>
 
@@ -37,7 +39,7 @@
                         <div class="kanban-card-dropzone d-flex flex-column gap-2" style="min-height: 250px;">
                             @if(isset($leadsByStatus[$status]))
                                 @foreach($leadsByStatus[$status] as $lead)
-                                <div class="lead-kanban-card p-3 bg-white rounded shadow-sm border-start border-4 border-{{ $stage['color'] }}" draggable="true" ondragstart="handleKanbanDragStart(event, this)" ondragend="handleKanbanDragEnd(this)" style="cursor: grab;" onclick="openLeadDetailModal('{{ addslashes($lead->first_name) }} {{ addslashes($lead->last_name) }}', '{{ addslashes($lead->phone) }}', '{{ addslashes($lead->email) }}', '{{ addslashes($lead->leadSource->name ?? 'Unknown') }}', '${{ $lead->estimated_cover }}/yr', '{{ $stage['label'] }}', 'Sushant Yadav', '{{ addslashes($lead->notes) }}')">
+                                <div class="lead-kanban-card p-3 bg-white rounded shadow-sm border-start border-4 border-{{ $stage['color'] }}" draggable="{{ auth()->user()->canWrite('leads') ? 'true' : 'false' }}" ondragstart="handleKanbanDragStart(event, this)" ondragend="handleKanbanDragEnd(this)" style="cursor: {{ auth()->user()->canWrite('leads') ? 'grab' : 'pointer' }};" onclick="openLeadDetailModal('{{ addslashes($lead->first_name) }} {{ addslashes($lead->last_name) }}', '{{ addslashes($lead->phone) }}', '{{ addslashes($lead->email) }}', '{{ addslashes($lead->leadSource->name ?? 'Unknown') }}', '${{ $lead->estimated_cover }}/yr', '{{ $stage['label'] }}', 'Sushant Yadav', '{{ addslashes($lead->notes) }}')">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="fw-bold text-dark fs-13">{{ $lead->first_name }} {{ $lead->last_name }}</div>
                                         <span class="badge bg-soft-{{ $stage['color'] }} text-{{ $stage['color'] }} fs-10">{{ $lead->leadSource->name ?? 'Unknown' }}</span>
@@ -84,7 +86,7 @@
                                         <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
                                         <div class="action-kebab-dropdown">
                                             <a href="javascript:void(0);" class="action-kebab-item" onclick="openLeadDetailModal('{{ addslashes($lead->first_name) }} {{ addslashes($lead->last_name) }}', '{{ addslashes($lead->phone) }}', '{{ addslashes($lead->email) }}', '{{ addslashes($lead->leadSource->name ?? 'Unknown') }}', '${{ $lead->estimated_cover }}/yr', '{{ $label }}', 'Sushant Yadav', '{{ addslashes($lead->notes) }}')"><i class="feather-eye text-primary me-1"></i> View Details</a>
-                                            @if($lead->status !== 'won')
+                                            @if(auth()->user()->canWrite('leads') && $lead->status !== 'won')
                                                 <form action="{{ route('crm.convert', $lead->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start" onclick="return confirm('Convert this lead to a client?');">

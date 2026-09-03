@@ -50,7 +50,7 @@
         <div class="card-widget">
             <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                 <h6 class="widget-title mb-0">Advisor Directory</h6>
-                @if(auth()->user()->isSuperAdmin())
+                @if(auth()->user()->canWrite('access'))
                     <button class="btn btn-primary btn-sm px-3 fw-bold"
                         data-bs-toggle="modal" data-bs-target="#addUserModal">
                         <i class="feather-user-plus me-1"></i> Add New User
@@ -68,7 +68,9 @@
                             <th>FSPR Number</th>
                             <th>Status</th>
                             <th>Last Login</th>
-                            <th class="text-center">Action</th>
+                            @if(auth()->user()->canWrite('access'))
+                                <th class="text-center">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -96,42 +98,42 @@
                                 <td class="fs-13 text-muted">
                                     {{ $user->last_login_at ? $user->last_login_at->format('d M Y, h:i A') : 'Never' }}
                                 </td>
+                                @if(auth()->user()->canWrite('access'))
                                 <td class="text-center">
-                                    @if(auth()->user()->isSuperAdmin())
-                                        <div class="action-kebab-wrapper">
-                                            <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
-                                            <div class="action-kebab-dropdown">
-                                                <a href="javascript:void(0);" class="action-kebab-item"
-                                                    data-bs-toggle="modal" data-bs-target="#editUserModal-{{ $user->id }}">
-                                                    <i class="feather-edit text-primary me-1"></i> Edit User
-                                                </a>
-                                                @if($user->id !== auth()->id())
-                                                    @if($user->status === 'active')
-                                                        <form method="POST" action="{{ route('users.deactivate', $user) }}"
-                                                            onsubmit="return confirm('Deactivate {{ addslashes($user->name) }}? Their session will be terminated.');">
-                                                            @csrf @method('PATCH')
-                                                            <button type="submit" class="action-kebab-item text-danger w-100 text-start border-0 bg-transparent">
-                                                                <i class="feather-user-x text-danger me-1"></i> Deactivate
-                                                            </button>
-                                                        </form>
-                                                    @else
-                                                        <form method="POST" action="{{ route('users.update', $user) }}">
-                                                            @csrf @method('PATCH')
-                                                            <input type="hidden" name="status" value="active">
-                                                            <button type="submit" class="action-kebab-item text-success w-100 text-start border-0 bg-transparent">
-                                                                <i class="feather-user-check text-success me-1"></i> Activate
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                    <div class="action-kebab-wrapper">
+                                        <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
+                                        <div class="action-kebab-dropdown">
+                                            <a href="javascript:void(0);" class="action-kebab-item"
+                                                data-bs-toggle="modal" data-bs-target="#editUserModal-{{ $user->id }}">
+                                                <i class="feather-edit text-primary me-1"></i> Edit User
+                                            </a>
+                                            @if($user->id !== auth()->id())
+                                                @if($user->status === 'active')
+                                                    <form method="POST" action="{{ route('users.deactivate', $user) }}"
+                                                        onsubmit="return confirm('Deactivate {{ addslashes($user->name) }}? Their session will be terminated.');">
+                                                        @csrf @method('PATCH')
+                                                        <button type="submit" class="action-kebab-item text-danger w-100 text-start border-0 bg-transparent">
+                                                            <i class="feather-user-x text-danger me-1"></i> Deactivate
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form method="POST" action="{{ route('users.update', $user) }}">
+                                                        @csrf @method('PATCH')
+                                                        <input type="hidden" name="status" value="active">
+                                                        <button type="submit" class="action-kebab-item text-success w-100 text-start border-0 bg-transparent">
+                                                            <i class="feather-user-check text-success me-1"></i> Activate
+                                                        </button>
+                                                    </form>
                                                 @endif
-                                            </div>
+                                            @endif
                                         </div>
-                                    @endif
+                                    </div>
                                 </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4 fs-13">No users found.</td>
+                                <td colspan="{{ auth()->user()->canWrite('access') ? 7 : 6 }}" class="text-center text-muted py-4 fs-13">No users found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -148,7 +150,7 @@
                     Role Permissions Matrix
                     <span class="badge bg-soft-primary text-primary ms-1 fs-11">{{ $roles->count() }}</span>
                 </h6>
-                @if(auth()->user()->isSuperAdmin())
+                @if(auth()->user()->canWrite('access'))
                     <button class="btn btn-primary btn-sm px-3 fw-bold"
                         data-bs-toggle="modal" data-bs-target="#addRoleModal">
                         <i class="feather-plus me-1"></i> Add New Role
@@ -167,7 +169,7 @@
                             <th>Reports</th>
                             <th>Documents</th>
                             <th>Access Ctrl</th>
-                            @if(auth()->user()->isSuperAdmin())
+                            @if(auth()->user()->canWrite('access'))
                                 <th class="text-center">Action</th>
                             @endif
                         </tr>
@@ -194,7 +196,7 @@
                                         @endif
                                     </td>
                                 @endforeach
-                                @if(auth()->user()->isSuperAdmin())
+                                @if(auth()->user()->canWrite('access'))
                                     <td class="text-center">
                                         <button type="button" class="btn btn-outline-primary btn-sm px-2 py-1 fs-12 fw-semibold"
                                             data-bs-toggle="modal" data-bs-target="#editRoleModal-{{ $role->id }}">
@@ -215,7 +217,7 @@
 {{-- ═══════════════════════════════════════════════════════════════════════ --}}
 {{-- ALL MODALS (Placed safely outside of tables and card-widgets)          --}}
 {{-- ═══════════════════════════════════════════════════════════════════════ --}}
-@if(auth()->user()->isSuperAdmin())
+@if(auth()->user()->canWrite('access'))
 
     {{-- ─── Modals: Edit User (One per user) ─────────────────────────────── --}}
     @foreach($users as $user)
