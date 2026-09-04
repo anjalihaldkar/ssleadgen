@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Crm\ClientController;
 use App\Http\Controllers\Crm\LeadController;
-use App\Http\Controllers\Crm\PolicyController;
+use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Auth Routes ──────────────────────────────────────────────────────────────
@@ -13,6 +15,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+
+    // Password reset
+    Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])
@@ -44,6 +52,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
             Route::get('/crm/create', [LeadController::class, 'create'])->name('crm.create');
             Route::post('/crm/leads', [LeadController::class, 'store'])->name('crm.store');
             Route::post('/crm/leads/{lead}/convert', [LeadController::class, 'convert'])->name('crm.convert');
+            Route::patch('/crm/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('crm.updateStatus');
         });
     });
 
@@ -52,24 +61,11 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::get('/clients/{status?}', [ClientController::class, 'index'])->name('clients.index');
     });
 
-    // Policies & Claims
-    Route::middleware('permission:policies,read')->group(function () {
-        Route::get('/policies', [PolicyController::class, 'index'])->name('policies.index');
-        Route::middleware('permission:policies,write')->group(function () {
-            Route::post('/policies', [PolicyController::class, 'store'])->name('policies.store');
-        });
-    });
-    Route::middleware('permission:claims,read')->group(function () {
-        Route::get('/policies/claims', function () {
-            return view('pages.policies.claims');
-        });
-    });
-
     // Utilities
     Route::middleware('permission:calendar,read')->group(function () {
-        Route::get('/utilities/calendar', function () {
-            return view('pages.utilities.calendar');
-        });
+        Route::get('/utilities/calendar', [AppointmentController::class, 'index'])->name('calendar.index');
+        Route::post('/utilities/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+        Route::delete('/utilities/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
     });
     Route::middleware('permission:tasks,read')->group(function () {
         Route::get('/utilities/tasks', function () {
@@ -77,26 +73,14 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         });
     });
     Route::middleware('permission:documents,read')->group(function () {
-        Route::get('/utilities/documents', function () {
-            return view('pages.utilities.documents');
-        });
+        Route::get('/utilities/documents', [DocumentController::class, 'index'])->name('documents.index');
+        Route::post('/utilities/documents', [DocumentController::class, 'store'])->name('documents.store');
+        Route::get('/utilities/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+        Route::delete('/utilities/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
     });
 
-    // Settings
-    Route::middleware('permission:settings,read')->group(function () {
-        Route::get('/utilities/communications', function () {
-            return view('pages.utilities.communications');
-        });
-        Route::get('/settings/users', function () {
-            return view('pages.settings.users');
-        });
-        Route::get('/settings/commissions', function () {
-            return view('pages.settings.commissions');
-        });
-        Route::get('/settings/sources', function () {
-            return view('pages.settings.sources');
-        });
-    });
+    // Public share route for documents
+    Route::get('/share/document/{token}', [DocumentController::class, 'share'])->name('documents.share');
 
     // ─── Access Control ──────────────────────────────────────────────────────
     Route::middleware('permission:access,read')->group(function () {
@@ -106,8 +90,10 @@ Route::middleware(['auth', 'user.active'])->group(function () {
             Route::post('/settings/users', [UserController::class, 'store'])->name('users.store');
             Route::patch('/settings/users/{user}', [UserController::class, 'update'])->name('users.update');
             Route::patch('/settings/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
+            Route::delete('/settings/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
             Route::post('/settings/roles', [UserController::class, 'storeRole'])->name('roles.store');
             Route::patch('/settings/roles/{role}', [UserController::class, 'updateRole'])->name('roles.update');
+            Route::delete('/settings/roles/{role}', [UserController::class, 'destroyRole'])->name('roles.destroy');
         });
     });
 });

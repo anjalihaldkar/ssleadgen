@@ -188,6 +188,26 @@ class UserController extends Controller
         return back()->with('success', 'User deactivated and their session has been terminated.');
     }
 
+    public function destroy(User $user): RedirectResponse
+    {
+        if (! auth()->user()->isSuperAdmin()) {
+            abort(403);
+        }
+
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'You cannot delete your own account.');
+        }
+
+        if ($user->isSuperAdmin()) {
+            return back()->with('error', 'Cannot delete a Super Admin account.');
+        }
+
+        $name = $user->name;
+        $user->delete();
+
+        return back()->with('success', "User \"{$name}\" deleted successfully.");
+    }
+
     // ─── Roles ────────────────────────────────────────────────────────────────
 
     public function storeRole(Request $request): RedirectResponse
@@ -246,5 +266,24 @@ class UserController extends Controller
         ]);
 
         return back()->with('success', "Role \"{$role->name}\" permissions updated successfully.");
+    }
+
+    public function destroyRole(Role $role): RedirectResponse
+    {
+        if (! auth()->user()->isSuperAdmin()) {
+            abort(403);
+        }
+
+        if ($role->is_super_admin) {
+            return back()->with('error', 'Cannot delete a Super Admin role.');
+        }
+
+        if (User::where('role_id', $role->id)->exists()) {
+            return back()->with('error', 'Cannot delete role because it is still assigned to one or more users.');
+        }
+
+        $role->delete();
+
+        return back()->with('success', "Role \"{$role->name}\" deleted successfully.");
     }
 }

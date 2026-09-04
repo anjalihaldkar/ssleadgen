@@ -30,9 +30,14 @@ class Role extends Model
     public static function modules(): array
     {
         return [
-            'dashboard', 'clients', 'policies', 'leads',
-            'tasks', 'calendar', 'reports', 'documents',
-            'claims', 'settings', 'access',
+            'dashboard',
+            'clients', 'clients_login', 'clients_inforce', 'clients_inactive', 'clients_cancellation', 'clients_npw_deferred',
+            'leads',
+            'tasks',
+            'calendar',
+            'reports',
+            'documents',
+            'access',
         ];
     }
 

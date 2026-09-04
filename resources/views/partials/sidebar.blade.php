@@ -35,25 +35,28 @@
                             <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
                         </a>
                         <ul class="nxl-submenu" style="{{ request()->is('clients*') ? 'display: block !important;' : '' }}">
+                            @if(auth()->user()?->hasPermission('clients_login'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('auth/clients-login') }}">Login Client</a></li>
+                            @endif
+                            @if(auth()->user()?->hasPermission('clients_inforce'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('clients/inforce') }}">Inforce Clients</a></li>
+                            @endif
+                            @if(auth()->user()?->hasPermission('clients_inactive'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('clients/inactive') }}">Inactive Clients</a></li>
+                            @endif
+                            @if(auth()->user()?->hasPermission('clients_cancellation'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('clients/cancellation') }}">Cancellation update</a></li>
+                            @endif
+                            @if(auth()->user()?->hasPermission('clients_npw_deferred'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('clients/npw-deferred') }}">NPW Deferred</a></li>
+                            @endif
+                            @if(auth()->user()?->hasPermission('clients'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('clients') }}">All Clients</a></li>
+                            @endif
                         </ul>
                     </li>
                     @endif
 
-                    {{-- 3. Policies Portfolio --}}
-                    @if(auth()->user()?->hasPermission('policies'))
-                    <li class="nxl-item {{ request()->is('policies') ? 'active' : '' }}">
-                        <a href="{{ url('policies') }}" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-file-text"></i></span>
-                            <span class="nxl-mtext">Policies Portfolio</span>
-                        </a>
-                    </li>
-                    @endif
 
                     {{-- 4. Leads Pipeline --}}
                     @if(auth()->user()?->hasPermission('leads'))
@@ -105,30 +108,7 @@
                     </li>
                     @endif
 
-                    {{-- 9. Claims Advocacy --}}
-                    @if(auth()->user()?->hasPermission('claims'))
-                    <li class="nxl-item {{ request()->is('policies/claims*') ? 'active' : '' }}">
-                        <a href="{{ url('policies/claims') }}" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-shield"></i></span>
-                            <span class="nxl-mtext">Claims Advocacy</span>
-                        </a>
-                    </li>
-                    @endif
 
-                    {{-- 10. Settings & Sources --}}
-                    @if(auth()->user()?->hasPermission('settings'))
-                    <li class="nxl-item nxl-hasmenu {{ request()->is('settings/sources*') || request()->is('settings/commissions*') ? 'active nxl-trigger' : '' }}">
-                        <a href="{{ url('settings/sources') }}" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-settings"></i></span>
-                            <span class="nxl-mtext">Settings & Sources</span>
-                            <span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
-                        </a>
-                        <ul class="nxl-submenu" style="{{ request()->is('settings/sources*') || request()->is('settings/commissions*') ? 'display: block !important;' : '' }}">
-                            <li class="nxl-item"><a class="nxl-link" href="{{ url('settings/sources') }}">Lead Sources</a></li>
-                            <li class="nxl-item"><a class="nxl-link" href="{{ url('settings/commissions') }}">Commissions</a></li>
-                        </ul>
-                    </li>
-                    @endif
 
                     {{-- 11. Access Control --}}
                     @if(auth()->user()?->hasPermission('access'))

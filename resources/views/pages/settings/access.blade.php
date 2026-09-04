@@ -109,13 +109,10 @@
                                             </a>
                                             @if($user->id !== auth()->id())
                                                 @if($user->status === 'active')
-                                                    <form method="POST" action="{{ route('users.deactivate', $user) }}"
-                                                        onsubmit="return confirm('Deactivate {{ addslashes($user->name) }}? Their session will be terminated.');">
-                                                        @csrf @method('PATCH')
-                                                        <button type="submit" class="action-kebab-item text-danger w-100 text-start border-0 bg-transparent">
-                                                            <i class="feather-user-x text-danger me-1"></i> Deactivate
-                                                        </button>
-                                                    </form>
+                                                    <a href="javascript:void(0);" class="action-kebab-item text-danger"
+                                                        data-bs-toggle="modal" data-bs-target="#deactivateUserModal-{{ $user->id }}">
+                                                        <i class="feather-user-x text-danger me-1"></i> Deactivate
+                                                    </a>
                                                 @else
                                                     <form method="POST" action="{{ route('users.update', $user) }}">
                                                         @csrf @method('PATCH')
@@ -125,6 +122,10 @@
                                                         </button>
                                                     </form>
                                                 @endif
+                                                <a href="javascript:void(0);" class="action-kebab-item text-danger"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteUserModal-{{ $user->id }}">
+                                                    <i class="feather-trash-2 text-danger me-1"></i> Delete User
+                                                </a>
                                             @endif
                                         </div>
                                     </div>
@@ -164,7 +165,6 @@
                             <th>Role</th>
                             <th>Description</th>
                             <th>Clients</th>
-                            <th>Policies</th>
                             <th>Leads</th>
                             <th>Reports</th>
                             <th>Documents</th>
@@ -184,7 +184,7 @@
                                     @endif
                                 </td>
                                 <td class="fs-12 text-muted" style="max-width:200px;">{{ $role->description }}</td>
-                                @foreach(['clients','policies','leads','reports','documents','access'] as $module)
+                                @foreach(['clients','leads','reports','documents','access'] as $module)
                                     @php $level = $role->permissions[$module] ?? 'none'; @endphp
                                     <td>
                                         @if($level === 'write')
@@ -198,10 +198,21 @@
                                 @endforeach
                                 @if(auth()->user()->canWrite('access'))
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-outline-primary btn-sm px-2 py-1 fs-12 fw-semibold"
-                                            data-bs-toggle="modal" data-bs-target="#editRoleModal-{{ $role->id }}">
-                                            <i class="feather-edit-2 me-1"></i> Edit
-                                        </button>
+                                        <div class="action-kebab-wrapper">
+                                            <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
+                                            <div class="action-kebab-dropdown">
+                                                <a href="javascript:void(0);" class="action-kebab-item"
+                                                    data-bs-toggle="modal" data-bs-target="#editRoleModal-{{ $role->id }}">
+                                                    <i class="feather-edit text-primary me-1"></i> Edit Role
+                                                </a>
+                                                @if(!$role->is_super_admin)
+                                                <a href="javascript:void(0);" class="action-kebab-item text-danger"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteRoleModal-{{ $role->id }}">
+                                                    <i class="feather-trash-2 text-danger me-1"></i> Delete Role
+                                                </a>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                 @endif
                             </tr>
@@ -269,17 +280,19 @@
     {{-- ─── Modals: Edit Role (One per role) ─────────────────────────────── --}}
     @php
     $moduleLabels = [
-        'dashboard' => ['feather-grid',        'Dashboard Overview'],
-        'clients'   => ['feather-users',       'Clients Directory'],
-        'policies'  => ['feather-file-text',   'Policies Portfolio'],
-        'leads'     => ['feather-target',      'Leads Pipeline'],
-        'tasks'     => ['feather-check-square', 'Tasks & Follow-ups'],
-        'calendar'  => ['feather-calendar',    'Calendar & Consultations'],
-        'reports'   => ['feather-bar-chart-2', 'Reports & Analytics'],
-        'documents' => ['feather-folder',      'Document Vault'],
-        'claims'    => ['feather-shield',      'Claims Advocacy'],
-        'settings'  => ['feather-settings',    'Settings & Sources'],
-        'access'    => ['feather-lock',        'Access Control'],
+        'dashboard' => ['feather-grid',        'Dashboard Overview', false],
+        'clients'   => ['feather-users',       'Clients Directory', false],
+        'clients_login' => ['feather-corner-down-right', 'Login Client', true],
+        'clients_inforce' => ['feather-corner-down-right', 'Inforce Clients', true],
+        'clients_inactive' => ['feather-corner-down-right', 'Inactive Clients', true],
+        'clients_cancellation' => ['feather-corner-down-right', 'Cancellation update', true],
+        'clients_npw_deferred' => ['feather-corner-down-right', 'NPW Deferred', true],
+        'leads'     => ['feather-target',      'Leads Pipeline', false],
+        'tasks'     => ['feather-check-square', 'Tasks & Follow-ups', false],
+        'calendar'  => ['feather-calendar',    'Calendar & Consultations', false],
+        'reports'   => ['feather-bar-chart-2', 'Reports & Analytics', false],
+        'documents' => ['feather-folder',      'Document Vault', false],
+        'access'    => ['feather-lock',        'Access Control', false],
     ];
     @endphp
 
@@ -287,72 +300,56 @@
     <div class="modal fade" id="editRoleModal-{{ $role->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-lg overflow-hidden">
-                <div class="modal-header border-0 pb-0 px-4 pt-4" style="background:#f8faff;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                            style="width:42px;height:42px;background:linear-gradient(135deg,#0ea5e9,#4f46e5);">
-                            <i class="feather-shield text-white"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold text-dark mb-0 fs-15">Edit Role: {{ $role->name }}</h5>
-                            <p class="text-muted fs-12 mb-0">Update role title, description, and module access permissions</p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header text-white" style="background-color: var(--color-navy-dark, #0B192C);">
+                    <h5 class="modal-title text-white mb-0">
+                        <i class="feather-shield me-2"></i> Edit Role: {{ $role->name }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form method="POST" action="{{ route('roles.update', $role) }}">
                     @csrf
                     @method('PATCH')
                     <div class="modal-body px-4 py-3">
                         <div class="row g-3 mb-4">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <label class="form-label fw-semibold fs-13 text-dark">
                                     Role Title <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" name="name" class="form-control"
                                     value="{{ $role->name }}" required {{ $role->is_super_admin ? 'readonly' : '' }}>
                             </div>
-                            <div class="col-6">
-                                <label class="form-label fw-semibold fs-13 text-dark">Description</label>
-                                <input type="text" name="description" class="form-control"
-                                    value="{{ $role->description }}" placeholder="Brief description">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold fs-13 text-dark">Role Description</label>
+                                <textarea name="description" class="form-control" rows="2" placeholder="Brief description of role capabilities">{{ $role->description }}</textarea>
                             </div>
                         </div>
 
                         <h6 class="fw-bold text-dark fs-13 mb-2">
-                            <i class="feather-sliders me-1 text-primary"></i> Module Permission Levels
+                            Module Permission Levels (All Sidebar Menus)
                         </h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered align-middle fs-13 mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="fw-semibold">Module</th>
-                                        <th class="text-center fw-semibold" style="width:90px;">
-                                            <span class="badge bg-secondary opacity-75">None</span>
-                                        </th>
-                                        <th class="text-center fw-semibold" style="width:90px;">
-                                            <span class="badge bg-info">Read</span>
-                                        </th>
-                                        <th class="text-center fw-semibold" style="width:90px;">
-                                            <span class="badge bg-success">Read/Write</span>
-                                        </th>
+                                        <th class="fw-bold text-uppercase fs-11 text-dark">Sidebar Navigation Menu</th>
+                                        <th class="text-center fw-bold text-uppercase fs-11 text-dark" style="width:100px;">Read Only</th>
+                                        <th class="text-center fw-bold text-uppercase fs-11 text-dark" style="width:100px;">Read / Write</th>
+                                        <th class="text-center fw-bold text-uppercase fs-11 text-dark" style="width:90px;">None</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach(\App\Models\Role::modules() as $module)
                                         @php
-                                            [$icon, $label] = $moduleLabels[$module];
+                                            $info = $moduleLabels[$module] ?? ['feather-circle', $module, false];
+                                            $icon = $info[0];
+                                            $label = $info[1];
+                                            $isSub = $info[2] ?? false;
                                             $curLevel = $role->permissions[$module] ?? 'none';
                                         @endphp
-                                        <tr>
-                                            <td>
-                                                <i class="{{ $icon }} me-2 text-primary fs-13"></i>
+                                        <tr class="{{ $isSub ? 'bg-light' : '' }}">
+                                            <td class="{{ $isSub ? 'ps-4 text-muted' : '' }}">
+                                                <i class="{{ $icon }} me-2 {{ $isSub ? 'text-secondary' : 'text-primary' }} fs-13"></i>
                                                 {{ $label }}
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="radio" name="permissions[{{ $module }}]"
-                                                    value="none" class="form-check-input"
-                                                    {{ $curLevel === 'none' ? 'checked' : '' }}>
                                             </td>
                                             <td class="text-center">
                                                 <input type="radio" name="permissions[{{ $module }}]"
@@ -363,6 +360,11 @@
                                                 <input type="radio" name="permissions[{{ $module }}]"
                                                     value="write" class="form-check-input"
                                                     {{ $curLevel === 'write' ? 'checked' : '' }}>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="radio" name="permissions[{{ $module }}]"
+                                                    value="none" class="form-check-input"
+                                                    {{ $curLevel === 'none' ? 'checked' : '' }}>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -435,25 +437,18 @@
     <div class="modal fade" id="addRoleModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-lg overflow-hidden">
-                <div class="modal-header border-0 pb-0 px-4 pt-4" style="background:#f8faff;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                            style="width:42px;height:42px;background:linear-gradient(135deg,#0ea5e9,#4f46e5);">
-                            <i class="feather-shield text-white"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold text-dark mb-0 fs-15">Add New Access Role</h5>
-                            <p class="text-muted fs-12 mb-0">Define role name and module-level permissions</p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header text-white" style="background-color: var(--color-navy-dark, #0B192C);">
+                    <h5 class="modal-title text-white mb-0">
+                        <i class="feather-shield me-2"></i> Add New Access Role & Permissions
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
                 <form method="POST" action="{{ route('roles.store') }}">
                     @csrf
                     <div class="modal-body px-4 py-3">
                         <div class="row g-3 mb-4">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <label class="form-label fw-semibold fs-13 text-dark" for="role-name-input">
                                     Role Title <span class="text-danger">*</span>
                                 </label>
@@ -461,46 +456,39 @@
                                     class="form-control"
                                     placeholder="e.g. Underwriting Specialist" required>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12">
                                 <label class="form-label fw-semibold fs-13 text-dark" for="role-desc-input">
-                                    Description
+                                    Role Description
                                 </label>
-                                <input type="text" id="role-desc-input" name="description"
-                                    class="form-control"
-                                    placeholder="Brief description of role capabilities">
+                                <textarea id="role-desc-input" name="description" class="form-control" rows="2" placeholder="Brief description of role capabilities"></textarea>
                             </div>
                         </div>
 
                         <h6 class="fw-bold text-dark fs-13 mb-2">
-                            <i class="feather-sliders me-1 text-primary"></i> Module Permission Levels
+                            Module Permission Levels (All Sidebar Menus)
                         </h6>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered align-middle fs-13 mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="fw-semibold">Module</th>
-                                        <th class="text-center fw-semibold" style="width:90px;">
-                                            <span class="badge bg-secondary opacity-75">None</span>
-                                        </th>
-                                        <th class="text-center fw-semibold" style="width:90px;">
-                                            <span class="badge bg-info">Read</span>
-                                        </th>
-                                        <th class="text-center fw-semibold" style="width:90px;">
-                                            <span class="badge bg-success">Read/Write</span>
-                                        </th>
+                                        <th class="fw-bold text-uppercase fs-11 text-dark">Sidebar Navigation Menu</th>
+                                        <th class="text-center fw-bold text-uppercase fs-11 text-dark" style="width:100px;">Read Only</th>
+                                        <th class="text-center fw-bold text-uppercase fs-11 text-dark" style="width:100px;">Read / Write</th>
+                                        <th class="text-center fw-bold text-uppercase fs-11 text-dark" style="width:90px;">None</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach(\App\Models\Role::modules() as $module)
-                                        @php [$icon, $label] = $moduleLabels[$module]; @endphp
-                                        <tr>
-                                            <td>
-                                                <i class="{{ $icon }} me-2 text-primary fs-13"></i>
+                                        @php 
+                                            $info = $moduleLabels[$module] ?? ['feather-circle', $module, false];
+                                            $icon = $info[0];
+                                            $label = $info[1];
+                                            $isSub = $info[2] ?? false;
+                                        @endphp
+                                        <tr class="{{ $isSub ? 'bg-light' : '' }}">
+                                            <td class="{{ $isSub ? 'ps-4 text-muted' : '' }}">
+                                                <i class="{{ $icon }} me-2 {{ $isSub ? 'text-secondary' : 'text-primary' }} fs-13"></i>
                                                 {{ $label }}
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="radio" name="permissions[{{ $module }}]"
-                                                    value="none" class="form-check-input" checked>
                                             </td>
                                             <td class="text-center">
                                                 <input type="radio" name="permissions[{{ $module }}]"
@@ -509,6 +497,10 @@
                                             <td class="text-center">
                                                 <input type="radio" name="permissions[{{ $module }}]"
                                                     value="write" class="form-check-input">
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="radio" name="permissions[{{ $module }}]"
+                                                    value="none" class="form-check-input" checked>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -530,5 +522,107 @@
     </div>
 
 @endif
+
+    {{-- ─── Modals: Deactivate User (One per user) ───────────────────────── --}}
+    @foreach($users as $user)
+    @if($user->status === 'active' && $user->id !== auth()->id())
+    <div class="modal fade" id="deactivateUserModal-{{ $user->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white bg-danger">
+                    <h5 class="modal-title text-white mb-0 fs-14">
+                        <i class="feather-alert-triangle me-2"></i> Deactivate User
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="feather-alert-octagon text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="mb-2">Are you sure?</h5>
+                    <p class="text-muted fs-13 mb-0">
+                        Deactivating <strong>{{ $user->name }}</strong> will immediately terminate their session and prevent future logins.
+                    </p>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
+                    <form method="POST" action="{{ route('users.deactivate', $user) }}">
+                        @csrf @method('PATCH')
+                        <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold">Yes, Deactivate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    @endforeach
+
+    {{-- ─── Modals: Delete Role (One per role) ─────────────────────────────── --}}
+    @foreach($roles as $role)
+    @if(!$role->is_super_admin)
+    <div class="modal fade" id="deleteRoleModal-{{ $role->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white bg-danger">
+                    <h5 class="modal-title text-white mb-0 fs-14">
+                        <i class="feather-alert-triangle me-2"></i> Delete Role
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="feather-trash-2 text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="mb-2">Are you sure?</h5>
+                    <p class="text-muted fs-13 mb-0">
+                        Delete role <strong>{{ $role->name }}</strong>? This action cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
+                    <form method="POST" action="{{ route('roles.destroy', $role) }}">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    @endforeach
+
+    {{-- ─── Modals: Delete User (One per user) ─────────────────────────────── --}}
+    @foreach($users as $user)
+    @if($user->id !== auth()->id() && !$user->isSuperAdmin())
+    <div class="modal fade" id="deleteUserModal-{{ $user->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white bg-danger">
+                    <h5 class="modal-title text-white mb-0 fs-14">
+                        <i class="feather-alert-triangle me-2"></i> Delete User
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="feather-trash-2 text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="mb-2">Are you sure?</h5>
+                    <p class="text-muted fs-13 mb-0">
+                        Delete user <strong>{{ $user->name }}</strong>? This action cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
+                    <form method="POST" action="{{ route('users.destroy', $user) }}">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    @endforeach
 
 @endsection

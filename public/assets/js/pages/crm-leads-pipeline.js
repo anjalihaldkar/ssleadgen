@@ -26,16 +26,27 @@ function handleKanbanDragOver(e) {
 
 function handleKanbanDrop(e, columnEl) {
     e.preventDefault();
-    if (draggedKanbanCard) {
-        const dropzone = columnEl.querySelector('.kanban-card-dropzone');
-        if (dropzone) {
-            dropzone.appendChild(draggedKanbanCard);
-            draggedKanbanCard.style.opacity = '1';
+    if (!draggedKanbanCard) return;
 
-            const statusClass = columnEl.getAttribute('data-status-class') || 'border-primary';
-            draggedKanbanCard.className = `lead-kanban-card p-3 bg-white rounded shadow-sm border-start border-4 ${statusClass}`;
-            updateKanbanColumnCounts();
-        }
+    const dropzone = columnEl.querySelector('.kanban-card-dropzone');
+    if (!dropzone) return;
+
+    const newStatus = columnEl.getAttribute('data-status');
+    const leadId = draggedKanbanCard.getAttribute('data-lead-id');
+    const statusClass = columnEl.closest('.kanban-column-box').getAttribute('data-status-class') || 'border-primary';
+
+    dropzone.appendChild(draggedKanbanCard);
+    draggedKanbanCard.style.opacity = '1';
+    draggedKanbanCard.className = `lead-kanban-card p-3 bg-white rounded shadow-sm border-start border-4 ${statusClass}`;
+    updateKanbanColumnCounts();
+
+    if (leadId && newStatus) {
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        fetch(`/crm/leads/${leadId}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token },
+            body: JSON.stringify({ status: newStatus }),
+        });
     }
 }
 

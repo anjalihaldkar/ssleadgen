@@ -52,4 +52,13 @@ class LeadController extends Controller
 
         return redirect()->route('clients.index')->with('success', 'Lead successfully converted to Client!');
     }
+
+    public function updateStatus(Request $request, Lead $lead)
+    {
+        $request->validate(['status' => 'required|string|in:new,contacted,proposal,won']);
+
+        $lead->update(['status' => $request->status]);
+
+        return response()->json(['success' => true]);
+    }
 }

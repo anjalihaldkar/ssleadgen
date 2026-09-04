@@ -86,7 +86,6 @@
                     </div>
                 </div>
 
-                <!-- PASSWORD INPUT -->
                 <div class="mb-3">
                     <div class="d-flex align-items-center justify-content-between mb-1">
                         <label class="form-label fs-12 fw-bold text-dark mb-0">Password *</label>
@@ -96,9 +95,10 @@
                     <div class="auth-input-group">
                         <i class="feather-lock auth-icon"></i>
                         <input type="password" id="passwordInput" class="form-control" placeholder="••••••••••••"
-                            value="password123" required />
-                        <i class="feather-eye password-toggle" id="togglePasswordBtn"
-                            onclick="togglePasswordVisibility()"></i>
+                            required />
+                        <button type="button" class="password-toggle" id="togglePasswordBtn">
+                            <i class="feather-eye"></i>
+                        </button>
                     </div>
                 </div>
 
