@@ -238,16 +238,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light d-flex justify-content-between">
-                    <form id="deleteAppointmentForm" method="POST">
+                <div class="modal-footer bg-light">
+                    <form id="deleteAppointmentForm" method="POST" class="me-auto">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm fw-bold"><i class="feather-trash-2 me-1"></i> Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm fw-bold px-3"><i class="feather-trash-2 me-1"></i> Delete</button>
                     </form>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="alert('Reminder sent to client via SMS & Email!')"><i class="feather-send me-1"></i> Send Reminder</button>
-                    </div>
+                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-sm fw-bold px-3" onclick="bootstrap.Modal.getInstance(document.getElementById('calendarEventDetailModal')).hide(); alert('Reminder sent!');"><i class="feather-send me-1"></i> Send Reminder</button>
                 </div>
             </div>
         </div>
@@ -319,10 +317,10 @@
             document.getElementById('eventDetailHeaderTitle').textContent = title;
             document.getElementById('eventDetailTime').textContent = time;
             document.getElementById('eventDetailClient').textContent = client;
-            // If location is a URL, render it as a clickable link
+            // Show URL as "Meeting Link" (clickable), not the raw URL
             var locEl = document.getElementById('eventDetailLocation');
             if (location && location.startsWith('http')) {
-                locEl.innerHTML = '<a href="' + location + '" target="_blank" rel="noopener">' + location + '</a>';
+                locEl.innerHTML = '<a href="' + location + '" target="_blank" rel="noopener" class="text-primary fw-bold">Meeting Link <i class="feather-external-link fs-11"></i></a>';
             } else {
                 locEl.textContent = location || 'N/A';
             }
