@@ -1,37 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Claims Management | SS Advisory Insurance Brokerage')
 
-@push('styles')
-<style>
-.modal-section-card {
-            background-color: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            padding: 18px;
-            margin-bottom: 20px;
-        }
-
-        .modal-section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--color-navy-dark, #0F172A);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid #E2E8F0;
-            padding-bottom: 8px;
-        }
-
-        .form-control[readonly] {
-            background-color: #FFFFFF !important;
-            color: #0F172A !important;
-            font-weight: 600;
-            border-color: #E2E8F0;
-        }
-</style>
-@endpush
-
 @section('content')
 <div class="nxl-content d-flex flex-column gap-4">
 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">

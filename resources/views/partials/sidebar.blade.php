@@ -44,6 +44,9 @@
                             @if(auth()->user()?->hasPermission('clients_inactive'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('clients/inactive') }}">Inactive Clients</a></li>
                             @endif
+                            @if(auth()->user()?->hasPermission('clients_claims'))
+                            <li class="nxl-item"><a class="nxl-link" href="{{ url('clients/claims') }}">Claim update</a></li>
+                            @endif
                             @if(auth()->user()?->hasPermission('clients_cancellation'))
                             <li class="nxl-item"><a class="nxl-link" href="{{ url('clients/cancellation') }}">Cancellation update</a></li>
                             @endif

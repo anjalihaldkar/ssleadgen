@@ -285,6 +285,7 @@
         'clients_login' => ['feather-corner-down-right', 'Login Client', true],
         'clients_inforce' => ['feather-corner-down-right', 'Inforce Clients', true],
         'clients_inactive' => ['feather-corner-down-right', 'Inactive Clients', true],
+        'clients_claims' => ['feather-corner-down-right', 'Claim update', true],
         'clients_cancellation' => ['feather-corner-down-right', 'Cancellation update', true],
         'clients_npw_deferred' => ['feather-corner-down-right', 'NPW Deferred', true],
         'leads'     => ['feather-target',      'Leads Pipeline', false],

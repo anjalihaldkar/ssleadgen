@@ -27,6 +27,12 @@ class ClientController extends Controller
 
         $clients = $query->latest()->get();
 
+        $viewName = $status ? "pages.clients.{$status}" : 'pages.clients.index';
+        
+        if (view()->exists($viewName)) {
+            return view($viewName, compact('clients', 'status'));
+        }
+
         return view('pages.clients.index', compact('clients', 'status'));
     }
 }
