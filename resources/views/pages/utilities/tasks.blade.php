@@ -41,36 +41,66 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @forelse($tasks as $task)
                             <tr>
-                                <td class="fw-bold text-dark fs-13"><i class="feather-phone-call text-primary me-2"></i>
-                                    Annual Review Call</td>
-                                <td class="fs-13 text-muted">Kishore Kumar</td>
-                                <td class="fs-13 text-muted">18 Aug 2026</td>
-                                <td><span class="badge bg-soft-danger text-danger fs-11">High</span></td>
-                                <td><span class="badge bg-soft-warning text-warning fs-11"
-                                        id="task-status-1">Pending</span></td>
+                                <td class="fw-bold text-dark fs-13"><i class="feather-check-circle text-primary me-2"></i>
+                                    {{ $task->title }}</td>
+                                <td class="fs-13 text-muted">{{ $task->client_name ?? 'General Client' }}</td>
+                                <td class="fs-13 text-muted">{{ $task->due_date->format('d M Y') }}</td>
+                                <td>
+                                    @if($task->priority === 'High')
+                                        <span class="badge bg-soft-danger text-danger fs-11">High</span>
+                                    @elseif($task->priority === 'Medium')
+                                        <span class="badge bg-soft-primary text-primary fs-11">Medium</span>
+                                    @else
+                                        <span class="badge bg-soft-info text-info fs-11">Low</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($task->status === 'Completed')
+                                        <span class="badge bg-soft-success text-success fs-11">Completed</span>
+                                    @else
+                                        <span class="badge bg-soft-warning text-warning fs-11">Pending</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
-                                    <div class="d-flex gap-2 justify-content-center"> <button
-                                            class="btn btn-sm btn-light text-primary py-1 px-2"
-                                            onclick="openTaskNotesModal('Annual Review Call', 'Kishore Kumar')"
-                                            title="Task Notes"><i class="feather-file-text"></i></button></div>
+                                    <div class="action-kebab-wrapper">
+                                        <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
+                                        <div class="action-kebab-dropdown">
+                                            <!-- Toggle Status -->
+                                            <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="m-0">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start">
+                                                    @if($task->status === 'Completed')
+                                                        <i class="feather-clock text-warning me-1"></i> Mark as Pending
+                                                    @else
+                                                        <i class="feather-check-circle text-success me-1"></i> Mark as Completed
+                                                    @endif
+                                                </button>
+                                            </form>
+                                            <!-- Task Notes -->
+                                            <button type="button" class="action-kebab-item border-0 bg-transparent w-100 text-start"
+                                                onclick="openTaskNotesModal({{ $task->id }}, '{{ addslashes($task->title) }}', '{{ addslashes($task->client_name ?? 'General Client') }}', {{ json_encode($task->notes) }})">
+                                                <i class="feather-file-text text-primary me-1"></i> Task Notes
+                                            </button>
+                                            <!-- Delete Task -->
+                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="m-0" onsubmit="return confirm('Are you sure you want to delete this task?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start text-danger">
+                                                    <i class="feather-trash-2 text-danger me-1"></i> Delete Task
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
+                            @empty
                             <tr>
-                                <td class="fw-bold text-dark fs-13"><i class="feather-mail text-info me-2"></i> Send
-                                    Policy Renewal Document</td>
-                                <td class="fs-13 text-muted">Vandana Singh</td>
-                                <td class="fs-13 text-muted">19 Aug 2026</td>
-                                <td><span class="badge bg-soft-primary text-primary fs-11">Medium</span></td>
-                                <td><span class="badge bg-soft-warning text-warning fs-11"
-                                        id="task-status-2">Pending</span></td>
-                                <td class="text-center">
-                                    <div class="d-flex gap-2 justify-content-center"> <button
-                                            class="btn btn-sm btn-light text-primary py-1 px-2"
-                                            onclick="openTaskNotesModal('Send Policy Renewal Document', 'Vandana Singh')"
-                                            title="Task Notes"><i class="feather-file-text"></i></button></div>
-                                </td>
+                                <td colspan="6" class="text-center py-4 text-muted">No tasks found. Click "Add Task" to create one.</td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -88,27 +118,28 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <form id="newTaskForm" onsubmit="event.preventDefault(); handleAddNewTask();">
+                <form id="newTaskForm" action="{{ route('tasks.store') }}" method="POST">
+                    @csrf
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label fw-semibold fs-13 text-dark">Task Title *</label>
-                            <input type="text" class="form-control" id="taskTitleInput"
+                            <input type="text" name="title" class="form-control" id="taskTitleInput"
                                 placeholder="e.g. Schedule Income Protection Review" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold fs-13 text-dark">Associated Client</label>
-                            <input type="text" class="form-control" id="taskClientInput" placeholder="Client Name">
+                            <input type="text" name="client_name" class="form-control" id="taskClientInput" placeholder="Client Name">
                         </div>
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label fw-semibold fs-13 text-dark">Due Date</label>
-                                <input type="date" class="form-control" id="taskDateInput" required>
+                                <input type="date" name="due_date" class="form-control" id="taskDateInput" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label fw-semibold fs-13 text-dark">Priority</label>
-                                <select class="form-select" id="taskPriorityInput">
+                                <select name="priority" class="form-select" id="taskPriorityInput">
                                     <option value="High">High</option>
-                                    <option value="Medium">Medium</option>
+                                    <option value="Medium" selected>Medium</option>
                                     <option value="Low">Low</option>
                                 </select>
                             </div>
@@ -145,12 +176,16 @@
                             <!-- Notes will be loaded here dynamically -->
                         </div>
                     </div>
-                    <div class="d-flex flex-column gap-2 mt-2 pt-2 border-top">
-                        <textarea id="newTaskNoteInput" class="form-control fs-12" placeholder="Write a task note..."
-                            rows="2"></textarea>
-                        <button class="btn btn-primary btn-sm align-self-end fw-bold px-3 py-1.5" id="addTaskNoteBtn"
-                            type="button"><i class="feather-plus me-1"></i> Add Note</button>
-                    </div>
+                    
+                    <form id="taskNoteForm" method="POST" action="">
+                        @csrf
+                        <div class="d-flex flex-column gap-2 mt-2 pt-2 border-top">
+                            <textarea name="note" id="newTaskNoteInput" class="form-control fs-12" placeholder="Write a task note..."
+                                rows="2" required></textarea>
+                            <button class="btn btn-primary btn-sm align-self-end fw-bold px-3 py-1.5" id="addTaskNoteBtn"
+                                type="submit"><i class="feather-plus me-1"></i> Add Note</button>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Close</button>

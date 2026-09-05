@@ -68,9 +68,11 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::delete('/utilities/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
     });
     Route::middleware('permission:tasks,read')->group(function () {
-        Route::get('/utilities/tasks', function () {
-            return view('pages.utilities.tasks');
-        });
+        Route::get('/utilities/tasks', [\App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
+        Route::post('/utilities/tasks', [\App\Http\Controllers\TaskController::class, 'store'])->name('tasks.store');
+        Route::patch('/utilities/tasks/{task}/status', [\App\Http\Controllers\TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+        Route::post('/utilities/tasks/{task}/notes', [\App\Http\Controllers\TaskController::class, 'storeNote'])->name('tasks.notes.store');
+        Route::delete('/utilities/tasks/{task}', [\App\Http\Controllers\TaskController::class, 'destroy'])->name('tasks.destroy');
     });
     Route::middleware('permission:documents,read')->group(function () {
         Route::get('/utilities/documents', [DocumentController::class, 'index'])->name('documents.index');
