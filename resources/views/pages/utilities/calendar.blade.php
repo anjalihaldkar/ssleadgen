@@ -306,7 +306,7 @@
     </div>
 
 @push('scripts')
-    <script src="{{ asset('assets/js/pages/calendar.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/calendar.js?v=2.0') }}"></script>
     <script>
         function openEventDetail(id, title, time, client, location, status, notes) {
             document.getElementById('eventDetailHeaderTitle').textContent = title;
