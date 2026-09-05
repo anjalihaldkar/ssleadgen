@@ -198,8 +198,11 @@
     </div>
 
 @push('scripts')
+    <!-- Datatables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ asset('assets/js/dashboard-redesign.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/tasks.js?v=1.1') }}"></script>
+    <script src="{{ asset('assets/js/pages/tasks.js?v=1.2') }}"></script>
 @endpush
 
 @endsection

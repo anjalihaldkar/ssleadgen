@@ -47,10 +47,18 @@ $(document).ready(function () {
 
 function filterTaskTable(filter) {
     if (!tasksDataTable) return;
+    
+    // Reset all searches
+    tasksDataTable.search("").columns().search("");
+    
     if (filter === "all") {
-        tasksDataTable.search("").columns().search("").draw();
-    } else {
-        tasksDataTable.search(filter).draw();
+        tasksDataTable.draw();
+    } else if (filter === "Completed" || filter === "Pending") {
+        // Search only in column 4 (Status)
+        tasksDataTable.column(4).search(filter).draw();
+    } else if (filter === "High") {
+        // Search only in column 3 (Priority)
+        tasksDataTable.column(3).search(filter).draw();
     }
 }
 
