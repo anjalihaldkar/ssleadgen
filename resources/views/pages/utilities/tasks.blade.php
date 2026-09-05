@@ -67,35 +67,43 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <div class="action-kebab-wrapper">
-                                        <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
-                                        <div class="action-kebab-dropdown">
-                                            <!-- Toggle Status -->
-                                            <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="m-0">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start">
-                                                    @if($task->status === 'Completed')
-                                                        <i class="feather-clock text-warning me-1"></i> Mark as Pending
-                                                    @else
-                                                        <i class="feather-check-circle text-success me-1"></i> Mark as Completed
-                                                    @endif
+                                    <div class="dropdown">
+                                        <button class="action-kebab-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-boundary="window">
+                                            <i class="feather-more-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="min-width: 150px; z-index: 1050;">
+                                            <li>
+                                                <!-- Toggle Status -->
+                                                <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="m-0">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="dropdown-item fs-12 fw-semibold py-2">
+                                                        @if($task->status === 'Completed')
+                                                            <i class="feather-clock text-warning me-2"></i> Mark as Pending
+                                                        @else
+                                                            <i class="feather-check-circle text-success me-2"></i> Mark as Completed
+                                                        @endif
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <!-- Task Notes -->
+                                                <button type="button" class="dropdown-item fs-12 fw-semibold py-2"
+                                                    onclick="openTaskNotesModal({{ $task->id }}, '{{ addslashes($task->title) }}', '{{ addslashes($task->client_name ?? 'General Client') }}', {{ json_encode($task->notes) }})">
+                                                    <i class="feather-file-text text-primary me-2"></i> Task Notes
                                                 </button>
-                                            </form>
-                                            <!-- Task Notes -->
-                                            <button type="button" class="action-kebab-item border-0 bg-transparent w-100 text-start"
-                                                onclick="openTaskNotesModal({{ $task->id }}, '{{ addslashes($task->title) }}', '{{ addslashes($task->client_name ?? 'General Client') }}', {{ json_encode($task->notes) }})">
-                                                <i class="feather-file-text text-primary me-1"></i> Task Notes
-                                            </button>
-                                            <!-- Delete Task -->
-                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="m-0" onsubmit="confirmFormSubmit(event, 'Are you sure you want to delete this task?', this)">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start text-danger">
-                                                    <i class="feather-trash-2 text-danger me-1"></i> Delete Task
-                                                </button>
-                                            </form>
-                                        </div>
+                                            </li>
+                                            <li>
+                                                <!-- Delete Task -->
+                                                <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="m-0" onsubmit="confirmFormSubmit(event, 'Are you sure you want to delete this task?', this)">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item fs-12 fw-semibold py-2 text-danger">
+                                                        <i class="feather-trash-2 text-danger me-2"></i> Delete Task
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
