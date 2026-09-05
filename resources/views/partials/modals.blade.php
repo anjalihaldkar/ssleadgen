@@ -32,6 +32,34 @@
         </div>
     </div>
 
+    <!-- Global Alert Modal (Replaces browser alert()) -->
+    <div class="modal fade" id="globalAlertModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg text-center">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <i class="feather-info text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-2" id="globalAlertTitle">Notification</h6>
+                    <p class="text-muted fs-13 mb-4" id="globalAlertMessage"></p>
+                    <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@push('scripts')
+<script>
+    // Overriding the default browser alert with our custom Bootstrap Modal
+    window._originalAlert = window.alert;
+    window.alert = function(message) {
+        $('#globalAlertMessage').text(message);
+        var modal = new bootstrap.Modal(document.getElementById('globalAlertModal'));
+        modal.show();
+    };
+</script>
+@endpush
+
     <!-- Modal: Logout Confirmation -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
