@@ -97,52 +97,77 @@
                             </table>
                         </div>
 
-                        <!-- 2. WEEK VIEW (static shell, kept for design) -->
+                        <!-- 2. WEEK VIEW -->
                         <div id="weekViewContainer" class="table-responsive d-none">
+                            @php
+                                $weekStart       = now()->startOfWeek(\Carbon\Carbon::MONDAY);
+                                $weekEnd         = $weekStart->copy()->addDays(6);
+                                $weekAppointments = \App\Models\Appointment::whereBetween('appointment_date', [
+                                    $weekStart->toDateString(),
+                                    $weekEnd->toDateString(),
+                                ])->orderBy('appointment_time')->get()
+                                  ->groupBy(fn($a) => $a->appointment_date->toDateString());
+                            @endphp
                             <table class="table table-bordered align-middle fs-13 mb-0 w-100">
                                 <thead class="bg-light text-center">
                                     <tr>
                                         <th style="width: 85px;">Time</th>
-                                        @php
-                                            $weekStart = \Carbon\Carbon::createFromDate($year, $month, 1)->startOfWeek(\Carbon\Carbon::MONDAY);
-                                        @endphp
                                         @for($d = 0; $d < 7; $d++)
                                             <th>{{ $weekStart->copy()->addDays($d)->format('D d M') }}</th>
                                         @endfor
                                     </tr>
                                 </thead>
                                 <tbody>
+                                @php
+                                    // Collect all unique hours across this week's appointments for the time column
+                                    $allWeekAppts = $weekAppointments->flatten()->sortBy('appointment_time');
+                                    $hasAny = $allWeekAppts->isNotEmpty();
+                                @endphp
+                                @if($hasAny)
+                                    {{-- One row per appointment time (unique times) --}}
                                     @php
-                                        $slots = ['09:00 AM','10:30 AM','12:00 PM','02:00 PM','04:00 PM'];
-                                        $weekAppointments = \App\Models\Appointment::whereBetween('appointment_date', [
-                                            $weekStart->toDateString(),
-                                            $weekStart->copy()->addDays(6)->toDateString()
-                                        ])->get()->groupBy(fn($a) => $a->appointment_date->toDateString());
+                                        $renderedTimes = [];
                                     @endphp
-                                    @foreach($slots as $slot)
-                                    <tr style="height: 65px;">
-                                        <td class="fw-bold text-muted text-center">{{ $slot }}</td>
-                                        @for($d = 0; $d < 7; $d++)
-                                            @php
-                                                $dayDate = $weekStart->copy()->addDays($d)->toDateString();
-                                                $slotAppts = ($weekAppointments[$dayDate] ?? collect())->filter(fn($a) =>
-                                                    \Carbon\Carbon::parse($a->appointment_time)->format('h:i A') === $slot
-                                                );
-                                            @endphp
-                                            <td>
-                                                @foreach($slotAppts as $ev)
-                                                    <span class="badge bg-primary p-2 w-100 text-start shadow-sm cursor-pointer"
-                                                        onclick="openEventDetail({{ $ev->id }}, '{{ addslashes($ev->title) }}', '{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}', '{{ addslashes($ev->client_name) }}', '{{ addslashes($ev->location) }}', '{{ $ev->status }}', '{{ addslashes($ev->notes) }}')">
-                                                        {{ Str::limit($ev->title, 20) }}
-                                                    </span>
-                                                @endforeach
-                                            </td>
-                                        @endfor
-                                    </tr>
+                                    @foreach($allWeekAppts as $apptRow)
+                                        @php $timeKey = \Carbon\Carbon::parse($apptRow->appointment_time)->format('H:i'); @endphp
+                                        @if(!in_array($timeKey, $renderedTimes))
+                                            @php $renderedTimes[] = $timeKey; @endphp
+                                            <tr style="min-height: 60px;">
+                                                <td class="fw-bold text-muted text-center">{{ \Carbon\Carbon::parse($apptRow->appointment_time)->format('h:i A') }}</td>
+                                                @for($d = 0; $d < 7; $d++)
+                                                    @php
+                                                        $dayDate   = $weekStart->copy()->addDays($d)->toDateString();
+                                                        $dayAppts  = ($weekAppointments[$dayDate] ?? collect())
+                                                            ->filter(fn($a) => \Carbon\Carbon::parse($a->appointment_time)->format('H:i') === $timeKey);
+                                                        $colorMap2 = ['event-blue'=>'bg-primary','event-green'=>'bg-success','event-yellow'=>'bg-warning text-dark','event-purple'=>'bg-purple'];
+                                                    @endphp
+                                                    <td>
+                                                        @foreach($dayAppts as $ev)
+                                                            <span class="badge {{ $colorMap2[$ev->color] ?? 'bg-primary' }} p-2 w-100 text-start shadow-sm cursor-pointer"
+                                                                onclick="openEventDetail({{ $ev->id }}, '{{ addslashes($ev->title) }}', '{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}', '{{ addslashes($ev->client_name) }}', '{{ addslashes($ev->location) }}', '{{ $ev->status }}', '{{ addslashes($ev->notes ?? '') }}')">
+                                                                {{ Str::limit($ev->title, 20) }}
+                                                            </span>
+                                                        @endforeach
+                                                    </td>
+                                                @endfor
+                                            </tr>
+                                        @endif
                                     @endforeach
+                                @else
+                                    {{-- Empty week: show standard time slots --}}
+                                    @foreach(['09:00 AM','10:30 AM','12:00 PM','02:00 PM','04:00 PM'] as $slot)
+                                        <tr style="height: 60px;">
+                                            <td class="fw-bold text-muted text-center">{{ $slot }}</td>
+                                            @for($d = 0; $d < 7; $d++)
+                                                <td></td>
+                                            @endfor
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 </tbody>
                             </table>
                         </div>
+
 
                         <!-- 3. DAY VIEW (today's appointments) -->
                         <div id="dayViewContainer" class="d-none">
