@@ -88,7 +88,7 @@
                                                 <i class="feather-file-text text-primary me-1"></i> Task Notes
                                             </button>
                                             <!-- Delete Task -->
-                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="m-0" onsubmit="return confirm('Are you sure you want to delete this task?');">
+                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="m-0" onsubmit="confirmFormSubmit(event, 'Are you sure you want to delete this task?', this)">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start text-danger">

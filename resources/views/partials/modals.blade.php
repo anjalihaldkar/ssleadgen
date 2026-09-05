@@ -48,6 +48,25 @@
         </div>
     </div>
 
+    <!-- Global Confirm Modal (Replaces browser confirm() for forms) -->
+    <div class="modal fade" id="globalConfirmModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg text-center">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <i class="feather-alert-triangle text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-2">Confirmation Required</h6>
+                    <p class="text-muted fs-13 mb-4" id="globalConfirmMessage">Are you sure?</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-warning btn-sm px-4 fw-bold" id="globalConfirmBtn">Yes, Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @push('scripts')
 <script>
     // Overriding the default browser alert with our custom Bootstrap Modal
@@ -55,6 +74,20 @@
     window.alert = function(message) {
         $('#globalAlertMessage').text(message);
         var modal = new bootstrap.Modal(document.getElementById('globalAlertModal'));
+        modal.show();
+    };
+
+    // Global Confirm for Form Submissions
+    window.confirmFormSubmit = function(event, message, formElement) {
+        event.preventDefault();
+        $('#globalConfirmMessage').text(message);
+        var modal = new bootstrap.Modal(document.getElementById('globalConfirmModal'));
+        
+        $('#globalConfirmBtn').off('click').on('click', function() {
+            modal.hide();
+            formElement.submit();
+        });
+        
         modal.show();
     };
 </script>
