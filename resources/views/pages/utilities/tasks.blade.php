@@ -23,7 +23,10 @@
                     <button class="nav-link fw-semibold text-danger" onclick="filterTaskTable('High')">High
                         Priority</button>
                 </li>
-
+                <li class="nav-item">
+                    <button class="nav-link fw-semibold text-primary" onclick="filterTaskTable('Medium')">Medium
+                        Priority</button>
+                </li>
             </ul>
 
             <!-- Task Table Card -->
