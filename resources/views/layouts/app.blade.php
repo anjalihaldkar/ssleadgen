@@ -78,7 +78,8 @@
     <script src="{{ asset('assets/vendors/js/apexcharts.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="{{ asset('assets/js/common-init.min.js') }}"></script>
-    <script src="{{ asset('assets/js/script.js?v=1.3') }}"></script>
+    <script src="{{ asset('assets/js/script.js?v=1.4') }}"></script>
+    <script src="{{ asset('assets/js/dashboard-redesign.js') }}"></script>
     
     @stack('scripts')
 </body>

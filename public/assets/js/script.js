@@ -243,27 +243,49 @@ $(document).on('click', '.action-kebab-btn', function (e) {
     let isOpen = dropdown.hasClass('show');
 
     // Close any currently open kebab dropdowns
-    $('.action-kebab-dropdown').removeClass('show');
+    $('.action-kebab-dropdown').removeClass('show').css({ 'position': '', 'top': '', 'left': '', 'right': '', 'bottom': '' });
     $('.action-kebab-wrapper').removeClass('show');
 
     // Toggle current dropdown if it wasn't open
     if (!isOpen) {
         dropdown.addClass('show');
         wrapper.addClass('show');
+        
+        // Prevent clipping by containers with overflow: hidden/auto (like table-responsive)
+        let rect = this.getBoundingClientRect();
+        dropdown.css({
+            'position': 'fixed',
+            'top': (rect.bottom + 4) + 'px',
+            'left': (rect.right - dropdown.outerWidth()) + 'px',
+            'bottom': 'auto',
+            'right': 'auto',
+            'z-index': '999999'
+        });
     }
 });
+
+// Close open dropdowns when scrolling to prevent floating detached menus
+document.addEventListener('scroll', function(e) {
+    if ($('.action-kebab-dropdown.show').length > 0) {
+        // Only close if scrolling something other than the dropdown itself
+        if (!$(e.target).closest('.action-kebab-dropdown').length) {
+            $('.action-kebab-dropdown').removeClass('show').css({ 'position': '', 'top': '', 'left': '', 'right': '', 'bottom': '' });
+            $('.action-kebab-wrapper').removeClass('show');
+        }
+    }
+}, true);
 
 // Close dropdown when clicking outside
 $(document).on('click', function (e) {
     if (!$(e.target).closest('.action-kebab-wrapper').length) {
-        $('.action-kebab-dropdown').removeClass('show');
+        $('.action-kebab-dropdown').removeClass('show').css({ 'position': '', 'top': '', 'left': '', 'right': '', 'bottom': '' });
         $('.action-kebab-wrapper').removeClass('show');
     }
 });
 
 // Close dropdown when an item inside is clicked
 $(document).on('click', '.action-kebab-item', function () {
-    $('.action-kebab-dropdown').removeClass('show');
+    $('.action-kebab-dropdown').removeClass('show').css({ 'position': '', 'top': '', 'left': '', 'right': '', 'bottom': '' });
     $('.action-kebab-wrapper').removeClass('show');
 });
 
