@@ -35,14 +35,17 @@
     <!-- Global Alert Modal (Replaces browser alert()) -->
     <div class="modal fade" id="globalAlertModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow-lg text-center">
-                <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <i class="feather-info text-primary" style="font-size: 3rem;"></i>
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-body p-4 text-center">
+                    <div class="avatar-text avatar-lg bg-soft-primary text-primary rounded-circle mx-auto mb-3"
+                        style="width: 50px; height: 50px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="feather-info fs-3"></i>
                     </div>
-                    <h6 class="fw-bold text-dark mb-2" id="globalAlertTitle">Notification</h6>
+                    <h5 class="fw-bold text-dark mb-1" id="globalAlertTitle">Notification</h5>
                     <p class="text-muted fs-13 mb-4" id="globalAlertMessage"></p>
-                    <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" data-bs-dismiss="modal">OK</button>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" data-bs-dismiss="modal">OK</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,12 +54,13 @@
     <!-- Global Confirm Modal (Replaces browser confirm() for forms) -->
     <div class="modal fade" id="globalConfirmModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow-lg text-center">
-                <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <i class="feather-alert-triangle text-warning" style="font-size: 3rem;"></i>
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-body p-4 text-center">
+                    <div class="avatar-text avatar-lg bg-soft-warning text-warning rounded-circle mx-auto mb-3"
+                        style="width: 50px; height: 50px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="feather-alert-triangle fs-3"></i>
                     </div>
-                    <h6 class="fw-bold text-dark mb-2">Confirmation Required</h6>
+                    <h5 class="fw-bold text-dark mb-1">Confirmation Required</h5>
                     <p class="text-muted fs-13 mb-4" id="globalConfirmMessage">Are you sure?</p>
                     <div class="d-flex gap-2 justify-content-center">
                         <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
