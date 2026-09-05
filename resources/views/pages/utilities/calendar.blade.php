@@ -59,7 +59,6 @@
                                     $dayNum       = 1;
                                     $nextDay      = 1;
                                     $colors       = ['event-blue','event-green','event-yellow','event-purple','event-red'];
-                                    $colorMap     = ['Confirmed'=>'event-green','Scheduled'=>'event-blue','Pending'=>'event-yellow'];
                                 @endphp
                                 @for ($row = 0; $row < 5; $row++)
                                     <tr>
@@ -79,9 +78,9 @@
                                                     @if($isToday)<span class="badge bg-cyan text-white fs-10 px-1">Today</span>@endif
                                                 </div>
                                                 @foreach($dayEvents as $ev)
-                                                    @php $badgeColor = $colorMap[$ev->status] ?? $ev->color; @endphp
+                                                    @php $badgeColor = $ev->color ?? 'event-blue'; @endphp
                                                     <div class="event-badge {{ $badgeColor }}"
-                                                        onclick="event.stopPropagation(); openEventDetail({{ $ev->id }}, '{{ addslashes($ev->title) }}', '{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}', '{{ addslashes($ev->client_name) }}', '{{ addslashes($ev->location) }}', '{{ $ev->status }}', '{{ addslashes($ev->notes) }}')">
+                                                        onclick="event.stopPropagation(); openEventDetail({{ $ev->id }}, '{{ addslashes($ev->title) }}', '{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}', '{{ addslashes($ev->client_name) }}', '{{ addslashes($ev->location) }}', '{{ $ev->status }}', '{{ addslashes($ev->notes ?? '') }}')">
                                                         {{ \Carbon\Carbon::parse($ev->appointment_time)->format('H:i') }} {{ Str::limit($ev->title, 18) }}
                                                     </div>
                                                 @endforeach
@@ -139,14 +138,13 @@
                                                         $dayDate   = $weekStart->copy()->addDays($d)->toDateString();
                                                         $dayAppts  = ($weekAppointments[$dayDate] ?? collect())
                                                             ->filter(fn($a) => \Carbon\Carbon::parse($a->appointment_time)->format('H:i') === $timeKey);
-                                                        $colorMap2 = ['event-blue'=>'bg-primary','event-green'=>'bg-success','event-yellow'=>'bg-warning text-dark','event-purple'=>'bg-purple'];
                                                     @endphp
                                                     <td>
                                                         @foreach($dayAppts as $ev)
-                                                            <span class="badge {{ $colorMap2[$ev->color] ?? 'bg-primary' }} p-2 w-100 text-start shadow-sm cursor-pointer"
+                                                            <div class="event-badge {{ $ev->color ?? 'event-blue' }} p-1 px-2 w-100 text-start shadow-sm cursor-pointer mb-1"
                                                                 onclick="openEventDetail({{ $ev->id }}, '{{ addslashes($ev->title) }}', '{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}', '{{ addslashes($ev->client_name) }}', '{{ addslashes($ev->location) }}', '{{ $ev->status }}', '{{ addslashes($ev->notes ?? '') }}')">
                                                                 {{ Str::limit($ev->title, 20) }}
-                                                            </span>
+                                                            </div>
                                                         @endforeach
                                                     </td>
                                                 @endfor
