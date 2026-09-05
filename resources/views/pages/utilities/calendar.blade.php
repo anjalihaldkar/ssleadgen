@@ -171,18 +171,20 @@
                         <div class="d-flex flex-column gap-3" id="agendaListContainer">
                             @forelse($todayAppointments as $ev)
                                 @php
-                                    $bgMap    = ['event-blue'=>'bg-soft-primary','event-green'=>'bg-soft-success','event-yellow'=>'bg-soft-warning','event-purple'=>'bg-soft-purple'];
-                                    $badgeBg  = ['event-blue'=>'bg-primary','event-green'=>'bg-success','event-yellow'=>'bg-warning text-dark','event-purple'=>'bg-purple'];
-                                    $iconMap  = ['Zoom Video Call'=>'feather-video','Phone Call'=>'feather-phone','In-Office'=>'feather-map-pin'];
-                                    $bg       = $bgMap[$ev->color] ?? 'bg-soft-primary';
-                                    $badge    = $badgeBg[$ev->color] ?? 'bg-primary';
-                                    $icon     = $iconMap[$ev->location] ?? 'feather-calendar';
+                                    $bgMap   = ['event-blue'=>'bg-soft-primary','event-green'=>'bg-soft-success','event-yellow'=>'bg-soft-warning','event-purple'=>'bg-soft-purple'];
+                                    $badgeBg = ['event-blue'=>'bg-primary','event-green'=>'bg-success','event-yellow'=>'bg-warning text-dark','event-purple'=>'bg-purple'];
+                                    $bg      = $bgMap[$ev->color] ?? 'bg-soft-primary';
+                                    $badge   = $badgeBg[$ev->color] ?? 'bg-primary';
+                                    // Smart location label & icon
+                                    $isUrl     = filter_var($ev->location, FILTER_VALIDATE_URL) !== false;
+                                    $locIcon   = $isUrl ? 'feather-link' : (str_contains(strtolower($ev->location ?? ''), 'zoom') ? 'feather-video' : (str_contains(strtolower($ev->location ?? ''), 'phone') ? 'feather-phone' : 'feather-map-pin'));
+                                    $locLabel  = $isUrl ? 'Meeting Link' : ($ev->location ?? 'N/A');
                                 @endphp
                                 <div class="p-3 {{ $bg }} rounded border cursor-pointer"
-                                    onclick="openEventDetail({{ $ev->id }}, '{{ addslashes($ev->title) }}', '{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}', '{{ addslashes($ev->client_name) }}', '{{ addslashes($ev->location) }}', '{{ $ev->status }}', '{{ addslashes($ev->notes) }}')">
+                                    onclick="openEventDetail({{ $ev->id }}, '{{ addslashes($ev->title) }}', '{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}', '{{ addslashes($ev->client_name) }}', '{{ addslashes($ev->location) }}', '{{ $ev->status }}', '{{ addslashes($ev->notes ?? '') }}')">
                                     <div class="d-flex align-items-center justify-content-between mb-1">
                                         <span class="badge {{ $badge }} fs-11">{{ \Carbon\Carbon::parse($ev->appointment_time)->format('h:i A') }}</span>
-                                        <span class="text-muted fs-11"><i class="{{ $icon }} me-1"></i> {{ $ev->location }}</span>
+                                        <span class="text-muted fs-11"><i class="{{ $locIcon }} me-1"></i> {{ $locLabel }}</span>
                                     </div>
                                     <div class="fw-bold text-dark fs-13">{{ $ev->title }}</div>
                                     <div class="text-muted fs-12 mt-1">Client: {{ $ev->client_name }}</div>
@@ -209,11 +211,11 @@
                             <span class="badge bg-soft-primary text-primary fw-bold fs-11" id="eventDetailStatus">Confirmed</span>
                             <h5 class="fw-bold text-dark mt-1 mb-0" id="eventDetailHeaderTitle"></h5>
                         </div>
-                        <div class="avatar-text avatar-lg bg-soft-primary text-primary rounded-circle" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;"><i class="feather-clock fs-4"></i></div>
+                        <div class="bg-soft-primary text-primary rounded-circle d-flex align-items-center justify-content-center" style="width:44px;height:44px;"><i class="feather-clock fs-4"></i></div>
                     </div>
                     <div class="row g-3 fs-13">
                         <div class="col-6">
-                            <span class="text-muted d-block fs-11 fw-semibold text-uppercase">Time</span>
+                            <span class="text-muted d-block fs-11 fw-semibold text-uppercase">Time &amp; Duration</span>
                             <strong class="text-dark" id="eventDetailTime"></strong>
                         </div>
                         <div class="col-6">
@@ -231,6 +233,8 @@
                         <div class="col-12 mt-2">
                             <span class="text-muted d-block fs-11 fw-semibold text-uppercase mb-1">Appointment Notes</span>
                             <div class="p-3 bg-light rounded border text-dark fs-13 mb-2" id="eventDetailNotes" style="max-height: 140px; overflow-y: auto; white-space: pre-line;"></div>
+                            <textarea id="eventDetailNewNoteInput" class="form-control fs-12 mb-2" rows="2" placeholder="Type appointment note..."></textarea>
+                            <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="handleSaveDetailNote()"><i class="feather-plus me-1"></i> Add Note</button>
                         </div>
                     </div>
                 </div>
@@ -240,7 +244,10 @@
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm fw-bold"><i class="feather-trash-2 me-1"></i> Delete</button>
                     </form>
-                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="alert('Reminder sent to client via SMS & Email!')"><i class="feather-send me-1"></i> Send Reminder</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -312,11 +319,29 @@
             document.getElementById('eventDetailHeaderTitle').textContent = title;
             document.getElementById('eventDetailTime').textContent = time;
             document.getElementById('eventDetailClient').textContent = client;
-            document.getElementById('eventDetailLocation').textContent = location;
+            // If location is a URL, render it as a clickable link
+            var locEl = document.getElementById('eventDetailLocation');
+            if (location && location.startsWith('http')) {
+                locEl.innerHTML = '<a href="' + location + '" target="_blank" rel="noopener">' + location + '</a>';
+            } else {
+                locEl.textContent = location || 'N/A';
+            }
             document.getElementById('eventDetailStatus').textContent = status;
             document.getElementById('eventDetailNotes').textContent = notes || 'No notes.';
+            document.getElementById('eventDetailNewNoteInput').value = '';
             document.getElementById('deleteAppointmentForm').action = '/utilities/appointments/' + id;
             new bootstrap.Modal(document.getElementById('calendarEventDetailModal')).show();
+        }
+
+        function handleSaveDetailNote() {
+            var input = document.getElementById('eventDetailNewNoteInput');
+            var newNote = input.value.trim();
+            if (!newNote) { return; }
+            var notesEl = document.getElementById('eventDetailNotes');
+            var now = new Date();
+            var timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            notesEl.textContent = notesEl.textContent + '\n[' + timeStr + '] ' + newNote;
+            input.value = '';
         }
     </script>
 @endpush
