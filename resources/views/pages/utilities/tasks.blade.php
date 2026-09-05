@@ -24,8 +24,8 @@
                         Priority</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link fw-semibold text-primary" onclick="filterTaskTable('Medium')">Medium
-                        Priority</button>
+                    <button class="nav-link fw-semibold text-success" onclick="filterTaskTable('Completed')">Completed
+                        Tasks</button>
                 </li>
             </ul>
 
