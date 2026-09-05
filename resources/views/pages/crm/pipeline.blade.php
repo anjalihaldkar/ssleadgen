@@ -89,7 +89,7 @@
                                             @if(auth()->user()->canWrite('leads') && $lead->status !== 'won')
                                                 <form action="{{ route('crm.convert', $lead->id) }}" method="POST" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start" onclick="return confirm('Convert this lead to a client?');">
+                                                    <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start" onclick="confirmFormSubmit(event, 'Convert this lead to a client?', this.closest('form'))">
                                                         <i class="feather-arrow-right text-success me-1"></i> Convert to Client
                                                     </button>
                                                 </form>
