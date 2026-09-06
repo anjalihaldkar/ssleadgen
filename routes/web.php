@@ -61,6 +61,16 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::get('/clients/{status?}', [ClientController::class, 'index'])->name('clients.index');
     });
 
+    // Login Clients CRUD
+    Route::middleware('permission:clients_login,read')->group(function () {
+        Route::get('/auth/clients-login', [ClientController::class, 'loginClients'])->name('clients.login');
+        Route::middleware('permission:clients_login,write')->group(function () {
+            Route::post('/clients/login', [ClientController::class, 'storeLoginClient'])->name('clients.login.store');
+            Route::patch('/clients/login/{client}', [ClientController::class, 'updateLoginClient'])->name('clients.login.update');
+            Route::delete('/clients/login/{client}', [ClientController::class, 'destroyLoginClient'])->name('clients.login.destroy');
+        });
+    });
+
     // Utilities
     Route::middleware('permission:calendar,read')->group(function () {
         Route::get('/utilities/calendar', [AppointmentController::class, 'index'])->name('calendar.index');
@@ -110,6 +120,4 @@ Route::get('/auth/forgot-password', function () {
 Route::get('/auth/reset-password', function () {
     return view('pages.auth.reset-password');
 });
-Route::get('/auth/clients-login', function () {
-    return view('pages.auth.clients-login');
-});
+

@@ -90,8 +90,12 @@
                                         <span class="status-pill-inactive">Inactive</span>
                                     @elseif($client->status == 'Cancellation')
                                         <span class="status-pill-cancellation">Cancellation</span>
-                                    @else
+                                    @elseif($client->status == 'NPW Deferred')
                                         <span class="status-pill-npw">NPW Deferred</span>
+                                    @elseif($client->status == 'Login Client')
+                                        <span class="badge bg-primary fs-11 px-2 py-1">Login Client</span>
+                                    @else
+                                        <span class="badge bg-secondary fs-11 px-2 py-1">{{ $client->status ?: 'Unknown' }}</span>
                                     @endif
                                 </td>
                                 <td class="fs-13 text-muted">{{ $client->leadSource->name ?? 'Direct' }}</td>

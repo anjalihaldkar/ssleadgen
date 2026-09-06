@@ -1,28 +1,51 @@
 /* Page script for clients-login */
 let loginClientsTable = null;
 
-function viewLoginClientDetails(policyNo, company, firstName, lastName, dob, mobile, email, address, suburb, city, postCode, loginDate, anp, outcome, adviser, notCounting, complianceBy, roaDueDate, statusCompliance, sentToClient) {
-    $('#viewPolicyNoHeader').text(policyNo);
-    $('#viewPolicyNo').val(policyNo);
-    $('#viewCompany').val(company);
-    $('#viewFirstName').val(firstName);
-    $('#viewLastName').val(lastName);
+function viewLoginClientFromRow(wrapper) {
+    const data = wrapper.dataset;
+    
+    $('#viewPolicyNoHeader').text(data.policy_no || '-');
+    $('#viewPolicyNo').val(data.policy_no);
+    $('#viewCompany').val(data.company);
+    $('#viewFirstName').val(data.first_name);
+    $('#viewLastName').val(data.last_name);
+    
+    let dob = data.dob;
+    if (dob) {
+        let parts = dob.split('-');
+        if (parts.length === 3) dob = parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
     $('#viewDob').val(dob);
-    $('#viewMobile').val(mobile);
-    $('#viewEmail').val(email);
-    $('#viewAddress').val(address);
-    $('#viewSuburb').val(suburb);
-    $('#viewCity').val(city);
-    $('#viewPostCode').val(postCode);
+    
+    $('#viewMobile').val(data.phone);
+    $('#viewEmail').val(data.email);
+    $('#viewAddress').val(data.address);
+    $('#viewSuburb').val(data.suburb);
+    $('#viewCity').val(data.city);
+    $('#viewPostCode').val(data.post_code);
+    
+    let loginDate = data.login_date;
+    if (loginDate) {
+        let parts = loginDate.split('-');
+        if (parts.length === 3) loginDate = parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
     $('#viewLoginDate').val(loginDate);
-    $('#viewAnp').val(anp);
-    $('#viewOutcome').val(outcome);
-    $('#viewAdviser').val(adviser);
-    $('#viewNotCounting').val(notCounting);
-    $('#viewComplianceBy').val(complianceBy);
-    $('#viewRoaDueDate').val(roaDueDate);
-    $('#viewStatusCompliance').val(statusCompliance);
-    $('#viewSentToClient').val(sentToClient);
+    
+    $('#viewAnp').val(data.anp);
+    $('#viewOutcome').val(data.outcome);
+    $('#viewAdviser').val(data.adviser);
+    $('#viewNotCounting').val(data.not_counting === '1' ? 'Yes' : 'No');
+    $('#viewComplianceBy').val(data.compliance_by);
+    
+    let roaDate = data.roa_due_date;
+    if (roaDate) {
+        let parts = roaDate.split('-');
+        if (parts.length === 3) roaDate = parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+    $('#viewRoaDueDate').val(roaDate);
+    
+    $('#viewStatusCompliance').val(data.status_compliance);
+    $('#viewSentToClient').val(data.sent_to_client);
 
     const modalEl = document.getElementById('viewLoginClientModal');
     const modal = new bootstrap.Modal(modalEl);
@@ -30,87 +53,68 @@ function viewLoginClientDetails(policyNo, company, firstName, lastName, dob, mob
 }
 
 function editCurrentViewedLoginClient() {
-    const policyNo = $('#viewPolicyNo').val();
-    const company = $('#viewCompany').val();
-    const firstName = $('#viewFirstName').val();
-    const lastName = $('#viewLastName').val();
-    const dob = $('#viewDob').val();
-    const mobile = $('#viewMobile').val();
-    const email = $('#viewEmail').val();
-    const address = $('#viewAddress').val();
-    const suburb = $('#viewSuburb').val();
-    const city = $('#viewCity').val();
-    const postCode = $('#viewPostCode').val();
-    const loginDate = $('#viewLoginDate').val();
-    const anp = $('#viewAnp').val();
-    const outcome = $('#viewOutcome').val();
-    const adviser = $('#viewAdviser').val();
-    const notCounting = $('#viewNotCounting').val();
-    const complianceBy = $('#viewComplianceBy').val();
-    const roaDueDate = $('#viewRoaDueDate').val();
-    const statusCompliance = $('#viewStatusCompliance').val();
-    const sentToClient = $('#viewSentToClient').val();
-
     const viewModalEl = document.getElementById('viewLoginClientModal');
     const viewModal = bootstrap.Modal.getInstance(viewModalEl);
     if (viewModal) viewModal.hide();
 
-    setTimeout(() => {
-        editLoginClientDetails(policyNo, company, firstName, lastName, dob, mobile, email, address, suburb, city, postCode, loginDate, anp, outcome, adviser, notCounting, complianceBy, roaDueDate, statusCompliance, sentToClient);
-    }, 300);
+    const policyNo = $('#viewPolicyNo').val();
+    const wrapper = document.querySelector('.action-kebab-wrapper[data-policy_no="' + policyNo + '"]');
+    if (wrapper) {
+        setTimeout(() => {
+            editLoginClientFromRow(wrapper);
+        }, 300);
+    }
 }
 
-function openEditLoginClientModal(policyNo, company, firstName, lastName, dob, mobile, email, address, suburb, city, postCode, loginDate, anp, outcome, adviser, notCounting, complianceBy, roaDueDate, statusCompliance, sentToClient) {
-    editLoginClientDetails(policyNo, company, firstName, lastName, dob, mobile, email, address, suburb, city, postCode, loginDate, anp, outcome, adviser, notCounting, complianceBy, roaDueDate, statusCompliance, sentToClient);
-}
+function editLoginClientFromRow(wrapper) {
+    const data = wrapper.dataset;
+    
+    $('#loginModalTitle').text('Edit Login Client Entry - ' + (data.policy_no || ''));
+    $('#addLoginClientForm')[0].reset();
+    
+    $('#loginFormMethod').val('PATCH');
+    $('#loginClientId').val(data.id);
+    
+    // We update the form action to point to the update route
+    let formAction = $('#addLoginClientForm').attr('action');
+    if (formAction.endsWith('/login')) {
+        $('#addLoginClientForm').attr('action', formAction + '/' + data.id);
+    } else {
+        // If it already has an ID, replace it
+        formAction = formAction.substring(0, formAction.lastIndexOf('/'));
+        $('#addLoginClientForm').attr('action', formAction + '/' + data.id);
+    }
 
-function editLoginClientDetails(policyNo, company, firstName, lastName, dob, mobile, email, address, suburb, city, postCode, loginDate, anp, outcome, adviser, notCounting, complianceBy, roaDueDate, statusCompliance, sentToClient) {
-    $('#loginModalTitle').text('Edit Login Client Entry - ' + policyNo);
-    $('#loginPolicyNoInput').val(policyNo || '');
-    if (company && $('#loginCompanyInput option[value="' + company + '"]').length > 0) {
-        $('#loginCompanyInput').val(company);
-    } else if (company) {
-        $('#loginCompanyInput').append(new Option(company, company, true, true)).val(company);
+    $('#loginPolicyNoInput').val(data.policy_no || '');
+    if (data.company && $('#loginCompanyInput option[value="' + data.company + '"]').length > 0) {
+        $('#loginCompanyInput').val(data.company);
+    } else if (data.company) {
+        $('#loginCompanyInput').append(new Option(data.company, data.company, true, true)).val(data.company);
     }
-    $('#loginFirstNameInput').val(firstName || '');
-    $('#loginLastNameInput').val(lastName || '');
+    $('#loginFirstNameInput').val(data.first_name || '');
+    $('#loginLastNameInput').val(data.last_name || '');
     
-    if (dob && dob.includes('/')) {
-        const parts = dob.split('/');
-        if (parts.length === 3) $('#loginDobInput').val(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else {
-        $('#loginDobInput').val(dob || '');
-    }
+    $('#loginDobInput').val(data.dob || '');
     
-    $('#loginMobileInput').val(mobile || '');
-    $('#loginEmailInput').val(email || '');
-    $('#loginAddressInput').val(address || '');
-    $('#loginSuburbInput').val(suburb || '');
-    $('#loginCityInput').val(city || '');
-    $('#loginPostCodeInput').val(postCode || '');
+    $('#loginMobileInput').val(data.phone || '');
+    $('#loginEmailInput').val(data.email || '');
+    $('#loginAddressInput').val(data.address || '');
+    $('#loginSuburbInput').val(data.suburb || '');
+    $('#loginCityInput').val(data.city || '');
+    $('#loginPostCodeInput').val(data.post_code || '');
     
-    if (loginDate && loginDate.includes('/')) {
-        const parts = loginDate.split('/');
-        if (parts.length === 3) $('#loginDateInput').val(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else {
-        $('#loginDateInput').val(loginDate || '');
-    }
+    $('#loginDateInput').val(data.login_date || '');
     
-    $('#loginAnpInput').val(anp ? anp.replace(/[^0-9.]/g, '') : '');
-    $('#loginOutcomeInput').val(outcome || '');
-    $('#loginAdviserInput').val(adviser || 'Sushant Yadav');
-    $('#loginNotCountingSelect').val(notCounting || 'No');
-    $('#loginComplianceByInput').val(complianceBy || 'Royson Pinto');
+    $('#loginAnpInput').val(data.anp || '');
+    $('#loginOutcomeInput').val(data.outcome || '');
+    $('#loginAdviserInput').val(data.adviser || '');
+    $('#loginNotCountingSelect').val(data.not_counting === '1' ? '1' : '0');
+    $('#loginComplianceByInput').val(data.compliance_by || '');
     
-    if (roaDueDate && roaDueDate.includes('/')) {
-        const parts = roaDueDate.split('/');
-        if (parts.length === 3) $('#loginRoaDueDateInput').val(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else {
-        $('#loginRoaDueDateInput').val(roaDueDate || '');
-    }
+    $('#loginRoaDueDateInput').val(data.roa_due_date || '');
     
-    $('#loginStatusComplianceSelect').val(statusCompliance || 'Sent to Compliance');
-    $('#loginSentToClientSelect').val(sentToClient || 'Pending');
+    $('#loginStatusComplianceSelect').val(data.status_compliance || 'Sent to Compliance');
+    $('#loginSentToClientSelect').val(data.sent_to_client || 'Pending');
 
     const modalEl = document.getElementById('addLoginClientModal');
     const modal = new bootstrap.Modal(modalEl);
@@ -120,7 +124,7 @@ function editLoginClientDetails(policyNo, company, firstName, lastName, dob, mob
 function openClientRequestModal(clientName, company) {
     $('#reqClientNameHeader').text(clientName);
     $('#reqClientNameInput').val(clientName);
-    $('#reqCompanyInput').val(company || 'AIA Life');
+    $('#reqCompanyInput').val(company || '');
     const today = new Date().toISOString().split('T')[0];
     $('#reqDateInput').val(today);
     $('#reqFinishedDateInput').val('');
