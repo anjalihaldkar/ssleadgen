@@ -171,7 +171,16 @@ function convertNoteToTask(leadName, noteIndex) {
     alert(`Successfully converted note to a task for "${leadName}"! It has been added to Tasks.`);
 }
 
-function openLeadDetailModal(name, phone, email, source, cover, stage, advisor, notes) {
+function openLeadDetailModal(name, phone, email, source, cover, stage, advisor, notes, leadId, leadStatus) {
+    // Wire the convert form in the footer
+    const convertForm = document.getElementById('leadConvertForm');
+    const convertBtn = document.getElementById('leadConvertBtn');
+    if (convertForm) {
+        convertForm.action = `/crm/leads/${leadId}/convert`;
+        if (convertBtn) {
+            convertBtn.style.display = leadStatus === 'won' ? 'none' : '';
+        }
+    }
     if (!leadNotes[name]) {
         leadNotes[name] = [{ text: notes || 'Newly added prospect lead.', timestamp: getCurrentDateTimeString() }];
         localStorage.setItem('ss_lead_notes', JSON.stringify(leadNotes));

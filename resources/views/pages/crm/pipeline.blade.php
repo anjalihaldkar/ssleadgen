@@ -39,7 +39,7 @@
                         <div class="kanban-card-dropzone d-flex flex-column gap-2" style="min-height: 250px;">
                             @if(isset($leadsByStatus[$status]))
                                 @foreach($leadsByStatus[$status] as $lead)
-                                <div class="lead-kanban-card p-3 bg-white rounded shadow-sm border-start border-4 border-{{ $stage['color'] }}" data-lead-id="{{ $lead->id }}" draggable="{{ auth()->user()->canWrite('leads') ? 'true' : 'false' }}" ondragstart="handleKanbanDragStart(event, this)" ondragend="handleKanbanDragEnd(this)" style="cursor: {{ auth()->user()->canWrite('leads') ? 'grab' : 'pointer' }};" onclick="openLeadDetailModal('{{ addslashes($lead->first_name) }} {{ addslashes($lead->last_name) }}', '{{ addslashes($lead->phone) }}', '{{ addslashes($lead->email) }}', '{{ addslashes($lead->leadSource->name ?? 'Unknown') }}', '${{ $lead->estimated_cover }}/yr', '{{ $stage['label'] }}', 'Sushant Yadav', '{{ addslashes($lead->notes) }}')">
+                                <div class="lead-kanban-card p-3 bg-white rounded shadow-sm border-start border-4 border-{{ $stage['color'] }}" data-lead-id="{{ $lead->id }}" draggable="{{ auth()->user()->canWrite('leads') ? 'true' : 'false' }}" ondragstart="handleKanbanDragStart(event, this)" ondragend="handleKanbanDragEnd(this)" style="cursor: {{ auth()->user()->canWrite('leads') ? 'grab' : 'pointer' }};" onclick="openLeadDetailModal('{{ addslashes($lead->first_name) }} {{ addslashes($lead->last_name) }}', '{{ addslashes($lead->phone) }}', '{{ addslashes($lead->email) }}', '{{ addslashes($lead->leadSource->name ?? 'Unknown') }}', '${{ $lead->estimated_cover }}/yr', '{{ $stage['label'] }}', 'Sushant Yadav', '{{ addslashes($lead->notes) }}', {{ $lead->id }}, '{{ $lead->status }}')">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="fw-bold text-dark fs-13">{{ $lead->first_name }} {{ $lead->last_name }}</div>
                                         <span class="badge bg-soft-{{ $stage['color'] }} text-{{ $stage['color'] }} fs-10">{{ $lead->leadSource->name ?? 'Unknown' }}</span>
@@ -85,7 +85,7 @@
                                     <div class="action-kebab-wrapper">
                                         <button class="action-kebab-btn"><i class="feather-more-vertical"></i></button>
                                         <div class="action-kebab-dropdown">
-                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openLeadDetailModal('{{ addslashes($lead->first_name) }} {{ addslashes($lead->last_name) }}', '{{ addslashes($lead->phone) }}', '{{ addslashes($lead->email) }}', '{{ addslashes($lead->leadSource->name ?? 'Unknown') }}', '${{ $lead->estimated_cover }}/yr', '{{ $label }}', 'Sushant Yadav', '{{ addslashes($lead->notes) }}')"><i class="feather-eye text-primary me-1"></i> View Details</a>
+                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openLeadDetailModal('{{ addslashes($lead->first_name) }} {{ addslashes($lead->last_name) }}', '{{ addslashes($lead->phone) }}', '{{ addslashes($lead->email) }}', '{{ addslashes($lead->leadSource->name ?? 'Unknown') }}', '${{ $lead->estimated_cover }}/yr', '{{ $label }}', 'Sushant Yadav', '{{ addslashes($lead->notes) }}', {{ $lead->id }}, '{{ $lead->status }}')"><i class="feather-eye text-primary me-1"></i> View Details</a>
                                             @if(auth()->user()->canWrite('leads') && $lead->status !== 'won')
                                                 <form action="{{ route('crm.convert', $lead->id) }}" method="POST" class="d-inline">
                                                     @csrf
@@ -115,6 +115,19 @@
                         </div>
                         <div class="modal-body p-4" id="leadDetailModalBody" style="max-height: 75vh; overflow-y: auto;">
                             {{-- Content is injected by openLeadDetailModal() JS function --}}
+                        </div>
+                        <div class="modal-footer bg-light d-flex justify-content-between">
+                            @if(auth()->user()->canWrite('leads'))
+                            <form id="leadConvertForm" method="POST" action="" onsubmit="return confirm('Convert this lead to a client?')">
+                                @csrf
+                                <button type="submit" id="leadConvertBtn" class="btn fw-bold text-white" style="background-color:#00A8B5;border-color:#00A8B5;" onmouseover="this.style.backgroundColor='#008C97'" onmouseout="this.style.backgroundColor='#00A8B5'">
+                                    <i class="feather-arrow-right me-1"></i> Convert to Login
+                                </button>
+                            </form>
+                            @else
+                            <span></span>
+                            @endif
+                            <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>

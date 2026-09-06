@@ -110,7 +110,7 @@
                                         $complianceBadge = match($client->status_compliance) {
                                             'Completed' => 'bg-soft-success text-success',
                                             'Approved'  => 'bg-soft-success text-success',
-                                            'In Review' => 'bg-soft-orange text-orange',
+                                            'In Review' => 'bg-soft-info text-info',
                                             default     => 'bg-soft-warning text-warning',
                                         };
                                     @endphp
@@ -151,9 +151,11 @@
                                         <div class="action-kebab-dropdown">
                                             <a href="javascript:void(0);" class="action-kebab-item" onclick="viewLoginClientFromRow(this.closest('.action-kebab-wrapper'))"><i class="feather-eye text-primary me-1"></i> View Profile</a>
                                             <a href="javascript:void(0);" class="action-kebab-item" onclick="editLoginClientFromRow(this.closest('.action-kebab-wrapper'))"><i class="feather-edit text-success me-1"></i> Edit Client</a>
-                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openClientRequestModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}')"><i class="feather-git-pull-request text-warning me-1"></i> Client Request</a>
-                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openClaimUpdateModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}')"><i class="feather-shield text-info me-1"></i> Claim Update</a>
-                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openCancellationUpdateModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}')"><i class="feather-file-minus text-danger me-1"></i> Cancellation update</a>
+                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openClientRequestModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}', {{ $client->id }})"><i class="feather-git-pull-request text-warning me-1"></i> Inforce Clients</a>
+                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openClaimUpdateModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}', {{ $client->id }})"><i class="feather-shield text-info me-1"></i> Claim Update</a>
+                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openInactiveClientModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}', '{{ $client->id }}')"><i class="feather-user-x text-secondary me-1"></i> Inactive Clients</a>
+                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openNpwDeferredModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}', '{{ $client->id }}')"><i class="feather-clock text-purple me-1"></i> NPW Deferred</a>
+                                            <a href="javascript:void(0);" class="action-kebab-item" onclick="openCancellationUpdateModal('{{ $client->first_name }} {{ $client->last_name }}', '{{ $client->company }}', '{{ $client->id }}')"><i class="feather-file-minus text-danger me-1"></i> Cancellation update</a>
                                             <form action="{{ route('clients.login.destroy', $client->id) }}" method="POST" class="m-0" onsubmit="confirmFormSubmit(event, 'Delete this client?', this)">
                                                 @csrf @method('DELETE')
                                                 <button type="submit" class="action-kebab-item border-0 bg-transparent w-100 text-start text-danger"><i class="feather-trash-2 text-danger me-1"></i> Delete Client</button>
@@ -178,7 +180,9 @@
                     <h5 class="modal-title text-white mb-0"><i class="feather-git-pull-request me-2"></i> Client Service Request - <span id="reqClientNameHeader"></span></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="clientRequestForm" onsubmit="event.preventDefault(); handleSaveClientRequest();">
+                <form id="clientRequestForm" method="POST" action="" onsubmit="return handleSaveClientRequest(event);">
+                    @csrf
+                    <input type="hidden" name="_client_id" id="reqClientId">
                     <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
                         
                         <!-- SECTION 1: REQUEST OVERVIEW -->
@@ -210,7 +214,7 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-12">
                                     <label class="form-label fw-semibold fs-13 text-dark">Request Type *</label>
-                                    <select class="form-select" id="reqTypeSelect" required>
+                                    <select class="form-select" id="reqTypeSelect" name="inforce_request_type" required>
                                         <option value="LOA">LOA</option>
                                         <option value="Update Address">Update Address</option>
                                         <option value="Put the premium on hold">Put the premium on hold</option>
@@ -226,7 +230,7 @@
                             <div class="row g-3">
                                 <div class="col-md-6 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Process Status</label>
-                                    <select class="form-select" id="reqProcessSelect">
+                                    <select class="form-select" id="reqProcessSelect" name="inforce_process_status">
                                         <option value="Logged">Logged</option>
                                         <option value="In Processing">In Processing</option>
                                         <option value="Submitted to Insurer">Submitted to Insurer</option>
@@ -236,7 +240,7 @@
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Process by *</label>
-                                    <select class="form-select" id="reqProcessBySelect" required>
+                                    <select class="form-select" id="reqProcessBySelect" name="inforce_process_by" required>
                                         <option value="Sushant Yadav">Sushant Yadav</option>
                                         <option value="Royson Pinto">Royson Pinto</option>
                                         <option value="Operations Team">Operations Team</option>
@@ -254,18 +258,22 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6 col-sm-12">
                                     <label class="form-label fw-semibold fs-13 text-dark">Results / Outcome</label>
-                                    <textarea class="form-control" id="reqOutcomeInput" rows="2" placeholder="e.g. Address updated with AIA portal successfully."></textarea>
+                                    <textarea class="form-control" id="reqOutcomeInput" name="inforce_outcome" rows="2" placeholder="e.g. Address updated with AIA portal successfully."></textarea>
                                 </div>
                                 <div class="col-md-6 col-sm-12">
                                     <label class="form-label fw-semibold fs-13 text-dark">Comments</label>
-                                    <textarea class="form-control" id="reqCommentsInput" rows="2" placeholder="Internal notes or adviser instructions..."></textarea>
+                                    <textarea class="form-control" id="reqCommentsInput" name="inforce_comments" rows="2" placeholder="Internal notes or adviser instructions..."></textarea>
                                 </div>
                             </div>
 
                             <div class="row g-3">
                                 <div class="col-md-6 col-sm-6">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Inforce Date</label>
+                                    <input type="date" class="form-control" id="reqDateInput" name="inforce_date">
+                                </div>
+                                <div class="col-md-6 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Finished Day (Date)</label>
-                                    <input type="date" class="form-control" id="reqFinishedDateInput">
+                                    <input type="date" class="form-control" id="reqFinishedDateInput" name="inforce_finished_date">
                                 </div>
                             </div>
                         </div>
@@ -273,7 +281,7 @@
                     </div>
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold"><i class="feather-save me-1"></i> Save Client Request</button>
+                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold"><i class="feather-save me-1"></i> Move to Inforce</button>
                     </div>
                 </form>
             </div>
@@ -289,7 +297,9 @@
                     <h5 class="modal-title text-white mb-0"><i class="feather-shield me-2"></i> <span id="claimModalTitle">New Claim Update</span></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="lodgeClaimForm" onsubmit="event.preventDefault(); handleAddNewClaim();">
+                <form id="lodgeClaimForm" method="POST" action="" onsubmit="return true;">
+                    @csrf
+                    <input type="hidden" id="claimClientId">
                     <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
                         <div class="modal-section-card">
                             <div class="modal-section-title">
@@ -297,35 +307,20 @@
                             </div>
                             <div class="row g-3">
                                 <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Client Name *</label>
-                                    <select class="form-select" id="claimClientSelect" required>
-                                        <option value="Rahul Sharma">Rahul Sharma</option>
-                                        <option value="Amanda Miller">Amanda Miller</option>
-                                        <option value="Jason Te Kuru">Jason Te Kuru</option>
-                                        <option value="Priya Patel">Priya Patel</option>
-                                        <option value="David Chen">David Chen</option>
-                                        <option value="Kishore Kumar">Kishore Kumar</option>
-                                        <option value="Suman Pappula">Suman Pappula</option>
-                                        <option value="Vandana Singh">Vandana Singh</option>
-                                    </select>
+                                    <label class="form-label fw-semibold fs-13 text-dark">Client Name</label>
+                                    <input type="text" class="form-control" id="claimClientNameDisplay" readonly>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Insurance Company *</label>
-                                    <select class="form-select" id="claimCompanySelect">
-                                        <option value="AIA Life">AIA Life</option>
-                                        <option value="Fidelity Life">Fidelity Life</option>
-                                        <option value="Chubb Life">Chubb Life</option>
-                                        <option value="Partners Life">Partners Life</option>
-                                        <option value="Asteron Life">Asteron Life</option>
-                                    </select>
+                                    <label class="form-label fw-semibold fs-13 text-dark">Insurance Company</label>
+                                    <input type="text" class="form-control" id="claimCompanyDisplay" readonly>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Claims (Type / Description) *</label>
-                                    <input type="text" class="form-control" id="claimTypeInput" placeholder="e.g. Medical Surgery / Trauma" required>
+                                    <input type="text" class="form-control" id="claimTypeInput" name="claim_type" placeholder="e.g. Medical Surgery / Trauma" required>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Admin (Claim Handler)</label>
-                                    <select class="form-select" id="claimAdminSelect">
+                                    <select class="form-select" id="claimAdminSelect" name="claim_admin">
                                         <option value="Sushant Yadav">Sushant Yadav</option>
                                         <option value="Royson Pinto">Royson Pinto</option>
                                     </select>
@@ -340,11 +335,11 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-4 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Processed Date</label>
-                                    <input type="date" class="form-control" id="claimProcessedDateInput">
+                                    <input type="date" class="form-control" id="claimProcessedDateInput" name="claim_processed_date">
                                 </div>
                                 <div class="col-md-4 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Update (Status)</label>
-                                    <select class="form-select" id="claimUpdateSelect">
+                                    <select class="form-select" id="claimUpdateSelect" name="claim_update_status">
                                         <option value="Under Assessment">Under Assessment</option>
                                         <option value="Medical Review">Medical Review</option>
                                         <option value="Document Verification">Document Verification</option>
@@ -354,14 +349,14 @@
                                 </div>
                                 <div class="col-md-4 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Approved Date</label>
-                                    <input type="date" class="form-control" id="claimApprovedDateInput">
+                                    <input type="date" class="form-control" id="claimApprovedDateInput" name="claim_approved_date">
                                 </div>
                             </div>
 
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label class="form-label fw-semibold fs-13 text-dark">Result / Outcome</label>
-                                    <input type="text" class="form-control" id="claimOutcomeInput" placeholder="e.g. Approved / Paid $18,500">
+                                    <input type="text" class="form-control" id="claimOutcomeInput" name="claim_result" placeholder="e.g. Approved / Paid $18,500">
                                 </div>
                             </div>
                         </div>
@@ -369,6 +364,121 @@
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold">Save Claim Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Mark as Inactive Confirmation -->
+    <div class="modal fade" id="addInactiveModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background-color: #0A192F;">
+                    <h5 class="modal-title text-white mb-0"><i class="feather-user-x me-2"></i> Mark Client as Inactive</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addInactiveForm" method="POST" action="">
+                    @csrf
+                    <div class="modal-body p-4 text-center">
+                        <div class="mb-3 text-secondary" style="font-size: 3rem;">
+                            <i class="feather-alert-circle"></i>
+                        </div>
+                        <h4 class="mb-3 text-dark fw-bold">Are you sure?</h4>
+                        <p class="text-muted fs-14">
+                            You are about to move <strong id="inactiveClientNameDisplay"></strong> to the Inactive Clients directory.
+                        </p>
+                    </div>
+                    <div class="modal-footer bg-light justify-content-center">
+                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn px-4 fw-bold text-white" style="background-color: #00A8B5; border-color: #00A8B5;" onmouseover="this.style.backgroundColor='#008C97'" onmouseout="this.style.backgroundColor='#00A8B5'">Update Inactive Client</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: NPW Deferred Popup -->
+    <div class="modal fade" id="addNpwModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background-color: var(--color-navy-dark);">
+                    <h5 class="modal-title text-white mb-0"><i class="feather-clock me-2"></i> <span id="npwModalTitle">NPW Deferred</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addNpwForm" method="POST" action="" onsubmit="return true;">
+                    @csrf
+                    <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
+                        <div class="modal-section-card">
+                            <div class="modal-section-title">
+                                <i class="feather-user text-primary fs-15"></i> 1. Client & Insurance Provider
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6 col-sm-6">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Client Name *</label>
+                                    <input type="text" class="form-control bg-light" id="npwClientNameDisplay" readonly>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Company *</label>
+                                    <input type="text" class="form-control bg-light" id="npwCompanyDisplay" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-section-card">
+                            <div class="modal-section-title">
+                                <i class="feather-file-text text-primary fs-15"></i> 2. Policy & Admin Details
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Issue Date *</label>
+                                    <input type="date" class="form-control" id="npwIssueDateInput" name="npw_issue_date" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Premium *</label>
+                                    <input type="text" class="form-control" id="npwPremiumInput" name="npw_premium" placeholder="e.g. 150.00" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Premium Mode</label>
+                                    <select class="form-select" id="npwPremiumModeSelect" name="npw_premium_mode">
+                                        <option value="Weekly">Weekly</option>
+                                        <option value="Fortnightly">Fortnightly</option>
+                                        <option value="Monthly" selected>Monthly</option>
+                                        <option value="Annually">Annually</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Admin (Handler)</label>
+                                    <select class="form-select" id="npwAdminSelect" name="npw_admin">
+                                        <option value="Sushant Yadav" selected>Sushant Yadav</option>
+                                        <option value="Royson Pinto">Royson Pinto</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Pending</label>
+                                    <select class="form-select" id="npwPendingSelect" name="npw_pending">
+                                        <option value="Yes" selected>Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-section-card mb-0">
+                            <div class="modal-section-title">
+                                <i class="feather-message-square text-primary fs-15"></i> 3. Notes & Comments
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold fs-13 text-dark">Notes/Comments</label>
+                                    <textarea class="form-control" id="npwNotesCommentsInput" name="npw_comments" rows="3" placeholder="Enter notes or explanation for deferral..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold">Save NPW Record</button>
                     </div>
                 </form>
             </div>
@@ -383,7 +493,8 @@
                     <h5 class="modal-title text-white mb-0"><i class="feather-file-minus me-2"></i> <span id="cancModalTitle">New Cancellation Update</span></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="addCancellationForm" onsubmit="event.preventDefault(); handleAddNewCancellation();">
+                <form id="addCancellationForm" method="POST" action="" onsubmit="return true;">
+                    @csrf
                     <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
                         <div class="modal-section-card">
                             <div class="modal-section-title">
@@ -392,26 +503,11 @@
                             <div class="row g-3">
                                 <div class="col-md-6 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Client Name *</label>
-                                    <select class="form-select" id="cancClientSelect" required>
-                                        <option value="Rahul Sharma">Rahul Sharma</option>
-                                        <option value="Amanda Miller">Amanda Miller</option>
-                                        <option value="Jason Te Kuru">Jason Te Kuru</option>
-                                        <option value="Priya Patel">Priya Patel</option>
-                                        <option value="David Chen">David Chen</option>
-                                        <option value="Kishore Kumar">Kishore Kumar</option>
-                                        <option value="Suman Pappula">Suman Pappula</option>
-                                        <option value="Vandana Singh">Vandana Singh</option>
-                                    </select>
+                                    <input type="text" class="form-control bg-light" id="cancClientNameDisplay" readonly>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Company *</label>
-                                    <select class="form-select" id="cancCompanySelect">
-                                        <option value="AIA Life">AIA Life</option>
-                                        <option value="Fidelity Life">Fidelity Life</option>
-                                        <option value="Chubb Life">Chubb Life</option>
-                                        <option value="Partners Life">Partners Life</option>
-                                        <option value="Asteron Life">Asteron Life</option>
-                                    </select>
+                                    <input type="text" class="form-control bg-light" id="cancCompanyDisplay" readonly>
                                 </div>
                             </div>
                         </div>
@@ -423,15 +519,15 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-4 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Cancellation Sent</label>
-                                    <input type="date" class="form-control" id="cancDateSentInput">
+                                    <input type="date" class="form-control" id="cancDateSentInput" name="canc_date_sent">
                                 </div>
                                 <div class="col-md-4 col-sm-6">
                                     <label class="form-label fw-semibold fs-13 text-dark">Completed</label>
-                                    <input type="text" class="form-control" id="cancCompletedInput" placeholder="e.g. 15/08/2026 or Pending">
+                                    <input type="date" class="form-control" id="cancCompletedInput" name="canc_completed_date">
                                 </div>
                                 <div class="col-md-4 col-sm-12">
                                     <label class="form-label fw-semibold fs-13 text-dark">Admin (Handler)</label>
-                                    <select class="form-select" id="cancAdminSelect">
+                                    <select class="form-select" id="cancAdminSelect" name="canc_admin">
                                         <option value="Sushant Yadav">Sushant Yadav</option>
                                         <option value="Royson Pinto">Royson Pinto</option>
                                     </select>
@@ -441,7 +537,7 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label class="form-label fw-semibold fs-13 text-dark">Outcome</label>
-                                    <input type="text" class="form-control" id="cancOutcomeInput" placeholder="e.g. Cancelled - Premium Cost Concerns">
+                                    <input type="text" class="form-control" id="cancOutcomeInput" name="canc_outcome" placeholder="e.g. Cancelled - Premium Cost Concerns">
                                 </div>
                             </div>
                         </div>
@@ -453,7 +549,7 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label class="form-label fw-semibold fs-13 text-dark">Comments</label>
-                                    <textarea class="form-control" id="cancCommentsInput" rows="3" placeholder="Enter comments or cancellation reason..."></textarea>
+                                    <textarea class="form-control" id="cancCommentsInput" name="canc_comments" rows="3" placeholder="Enter comments or cancellation reason..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -827,310 +923,11 @@
     
         </div>
     </div>
-
-﻿    <!-- Modal: Client Request Popup -->
-    <div class="modal fade" id="clientRequestModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header text-white" style="background-color: var(--color-navy-dark);">
-                    <h5 class="modal-title text-white mb-0"><i class="feather-git-pull-request me-2"></i> Client Service Request - <span id="reqClientNameHeader"></span></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="clientRequestForm" onsubmit="event.preventDefault(); handleSaveClientRequest();">
-                    <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
-                        
-                        <!-- SECTION 1: REQUEST OVERVIEW -->
-                        <div class="modal-section-card">
-                            <div class="modal-section-title">
-                                <i class="feather-calendar text-primary fs-15"></i> 1. Request Overview
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-4 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Date *</label>
-                                    <input type="date" class="form-control" id="reqDateInput" required>
-                                </div>
-                                <div class="col-md-4 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Client Name *</label>
-                                    <input type="text" class="form-control" id="reqClientNameInput" placeholder="Client Name" required>
-                                </div>
-                                <div class="col-md-4 col-sm-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Insurance Company *</label>
-                                    <input type="text" class="form-control" id="reqCompanyInput" placeholder="Insurance Company" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SECTION 2: REQUEST TYPE & PROCESSING -->
-                        <div class="modal-section-card">
-                            <div class="modal-section-title">
-                                <i class="feather-layers text-primary fs-15"></i> 2. Service Request & Processing
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Request Type *</label>
-                                    <select class="form-select" id="reqTypeSelect" required>
-                                        <option value="LOA">LOA</option>
-                                        <option value="Update Address">Update Address</option>
-                                        <option value="Put the premium on hold">Put the premium on hold</option>
-                                        <option value="LOA / Change of Adviser">LOA / Change of Adviser</option>
-                                        <option value="Correctify Name">Correctify Name</option>
-                                        <option value="Premium Deduction of 1 month">Premium Deduction of 1 month</option>
-                                        <option value="Birth Certificate to add name inbuilt cover">Birth Certificate to add name inbuilt cover</option>
-                                        <option value="Update Payment Details - DD">Update Payment Details - DD</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row g-3">
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Process Status</label>
-                                    <select class="form-select" id="reqProcessSelect">
-                                        <option value="Logged">Logged</option>
-                                        <option value="In Processing">In Processing</option>
-                                        <option value="Submitted to Insurer">Submitted to Insurer</option>
-                                        <option value="Pending Information">Pending Information</option>
-                                        <option value="Completed">Completed</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Process by *</label>
-                                    <select class="form-select" id="reqProcessBySelect" required>
-                                        <option value="Sushant Yadav">Sushant Yadav</option>
-                                        <option value="Royson Pinto">Royson Pinto</option>
-                                        <option value="Operations Team">Operations Team</option>
-                                        <option value="Compliance Officer">Compliance Officer</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SECTION 3: OUTCOME & COMPLETION -->
-                        <div class="modal-section-card mb-0">
-                            <div class="modal-section-title">
-                                <i class="feather-check-circle text-primary fs-15"></i> 3. Outcome & Completion Details
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6 col-sm-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Results / Outcome</label>
-                                    <textarea class="form-control" id="reqOutcomeInput" rows="2" placeholder="e.g. Address updated with AIA portal successfully."></textarea>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Comments</label>
-                                    <textarea class="form-control" id="reqCommentsInput" rows="2" placeholder="Internal notes or adviser instructions..."></textarea>
-                                </div>
-                            </div>
-
-                            <div class="row g-3">
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Finished Day (Date)</label>
-                                    <input type="date" class="form-control" id="reqFinishedDateInput">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold"><i class="feather-save me-1"></i> Save Client Request</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    
-    <!-- Modal: Claim Update Popup -->
-    <div class="modal fade" id="lodgeClaimModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header text-white" style="background-color: var(--color-navy-dark);">
-                    <h5 class="modal-title text-white mb-0"><i class="feather-shield me-2"></i> <span id="claimModalTitle">New Claim Update</span></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="lodgeClaimForm" onsubmit="event.preventDefault(); handleAddNewClaim();">
-                    <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
-                        <div class="modal-section-card">
-                            <div class="modal-section-title">
-                                <i class="feather-user text-primary fs-15"></i> 1. Client & Provider Info
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Client Name *</label>
-                                    <select class="form-select" id="claimClientSelect" required>
-                                        <option value="Rahul Sharma">Rahul Sharma</option>
-                                        <option value="Amanda Miller">Amanda Miller</option>
-                                        <option value="Jason Te Kuru">Jason Te Kuru</option>
-                                        <option value="Priya Patel">Priya Patel</option>
-                                        <option value="David Chen">David Chen</option>
-                                        <option value="Kishore Kumar">Kishore Kumar</option>
-                                        <option value="Suman Pappula">Suman Pappula</option>
-                                        <option value="Vandana Singh">Vandana Singh</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Insurance Company *</label>
-                                    <select class="form-select" id="claimCompanySelect">
-                                        <option value="AIA Life">AIA Life</option>
-                                        <option value="Fidelity Life">Fidelity Life</option>
-                                        <option value="Chubb Life">Chubb Life</option>
-                                        <option value="Partners Life">Partners Life</option>
-                                        <option value="Asteron Life">Asteron Life</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Claims (Type / Description) *</label>
-                                    <input type="text" class="form-control" id="claimTypeInput" placeholder="e.g. Medical Surgery / Trauma" required>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Admin (Claim Handler)</label>
-                                    <select class="form-select" id="claimAdminSelect">
-                                        <option value="Sushant Yadav">Sushant Yadav</option>
-                                        <option value="Royson Pinto">Royson Pinto</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-section-card mb-0">
-                            <div class="modal-section-title">
-                                <i class="feather-clock text-primary fs-15"></i> 2. Timeline & Status Outcome
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-4 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Processed Date</label>
-                                    <input type="date" class="form-control" id="claimProcessedDateInput">
-                                </div>
-                                <div class="col-md-4 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Update (Status)</label>
-                                    <select class="form-select" id="claimUpdateSelect">
-                                        <option value="Under Assessment">Under Assessment</option>
-                                        <option value="Medical Review">Medical Review</option>
-                                        <option value="Document Verification">Document Verification</option>
-                                        <option value="Approved">Approved</option>
-                                        <option value="Declined">Declined</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Approved Date</label>
-                                    <input type="date" class="form-control" id="claimApprovedDateInput">
-                                </div>
-                            </div>
-
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Result / Outcome</label>
-                                    <input type="text" class="form-control" id="claimOutcomeInput" placeholder="e.g. Approved / Paid $18,500">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold">Save Claim Record</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Cancellation Update Popup -->
-    <div class="modal fade" id="addCancellationModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header text-white" style="background-color: var(--color-navy-dark);">
-                    <h5 class="modal-title text-white mb-0"><i class="feather-file-minus me-2"></i> <span id="cancModalTitle">New Cancellation Update</span></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="addCancellationForm" onsubmit="event.preventDefault(); handleAddNewCancellation();">
-                    <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
-                        <div class="modal-section-card">
-                            <div class="modal-section-title">
-                                <i class="feather-user text-primary fs-15"></i> 1. Client & Insurance Provider
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Client Name *</label>
-                                    <select class="form-select" id="cancClientSelect" required>
-                                        <option value="Rahul Sharma">Rahul Sharma</option>
-                                        <option value="Amanda Miller">Amanda Miller</option>
-                                        <option value="Jason Te Kuru">Jason Te Kuru</option>
-                                        <option value="Priya Patel">Priya Patel</option>
-                                        <option value="David Chen">David Chen</option>
-                                        <option value="Kishore Kumar">Kishore Kumar</option>
-                                        <option value="Suman Pappula">Suman Pappula</option>
-                                        <option value="Vandana Singh">Vandana Singh</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Company *</label>
-                                    <select class="form-select" id="cancCompanySelect">
-                                        <option value="AIA Life">AIA Life</option>
-                                        <option value="Fidelity Life">Fidelity Life</option>
-                                        <option value="Chubb Life">Chubb Life</option>
-                                        <option value="Partners Life">Partners Life</option>
-                                        <option value="Asteron Life">Asteron Life</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-section-card">
-                            <div class="modal-section-title">
-                                <i class="feather-clock text-primary fs-15"></i> 2. Cancellation Timeline & Outcome
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-4 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Cancellation Sent</label>
-                                    <input type="date" class="form-control" id="cancDateSentInput">
-                                </div>
-                                <div class="col-md-4 col-sm-6">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Completed</label>
-                                    <input type="text" class="form-control" id="cancCompletedInput" placeholder="e.g. 15/08/2026 or Pending">
-                                </div>
-                                <div class="col-md-4 col-sm-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Admin (Handler)</label>
-                                    <select class="form-select" id="cancAdminSelect">
-                                        <option value="Sushant Yadav">Sushant Yadav</option>
-                                        <option value="Royson Pinto">Royson Pinto</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Outcome</label>
-                                    <input type="text" class="form-control" id="cancOutcomeInput" placeholder="e.g. Cancelled - Premium Cost Concerns">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-section-card mb-0">
-                            <div class="modal-section-title">
-                                <i class="feather-message-square text-primary fs-15"></i> 3. Comments & Internal Notes
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <label class="form-label fw-semibold fs-13 text-dark">Comments</label>
-                                    <textarea class="form-control" id="cancCommentsInput" rows="3" placeholder="Enter comments or cancellation reason..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold">Save Cancellation Record</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-
 @push('scripts')
     <script src="{{ asset('assets/js/dashboard-redesign.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/clients-login.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/clients-login.js') }}?v={{ time() }}"></script>
 @endpush
 
 @endsection
+
+

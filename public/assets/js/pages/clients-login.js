@@ -121,102 +121,80 @@ function editLoginClientFromRow(wrapper) {
     modal.show();
 }
 
-function openClientRequestModal(clientName, company) {
+function openClientRequestModal(clientName, company, clientId) {
     $('#reqClientNameHeader').text(clientName);
     $('#reqClientNameInput').val(clientName);
     $('#reqCompanyInput').val(company || '');
-    const today = new Date().toISOString().split('T')[0];
-    $('#reqDateInput').val(today);
+    $('#reqClientId').val(clientId);
+
+    // Build the action URL from the current base path
+    const basePath = window.location.origin + '/clients/login/' + clientId + '/inforce';
+    $('#clientRequestForm').attr('action', basePath);
+
+    // Reset variable fields
+    $('#reqDateInput').val('');
     $('#reqFinishedDateInput').val('');
     $('#reqOutcomeInput').val('');
     $('#reqCommentsInput').val('');
-    
+
     const modalEl = document.getElementById('clientRequestModal');
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
 }
 
-function openClaimUpdateModal(clientName, company) {
+function openClaimUpdateModal(clientName, company, clientId) {
     $('#claimModalTitle').text('New Claim Update - ' + clientName);
-    if ($('#claimClientSelect option[value="' + clientName + '"]').length > 0) {
-        $('#claimClientSelect').val(clientName);
-    } else {
-        $('#claimClientSelect').append(new Option(clientName, clientName, true, true)).val(clientName);
-    }
-    if (company && $('#claimCompanySelect option[value="' + company + '"]').length > 0) {
-        $('#claimCompanySelect').val(company);
-    } else if (company) {
-        $('#claimCompanySelect').append(new Option(company, company, true, true)).val(company);
-    }
-    const modalEl = document.getElementById('lodgeClaimModal');
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
-}
-
-function openCancellationUpdateModal(clientName, company) {
-    $('#cancModalTitle').text('New Cancellation Update - ' + clientName);
-    if ($('#cancClientSelect option[value="' + clientName + '"]').length > 0) {
-        $('#cancClientSelect').val(clientName);
-    } else {
-        $('#cancClientSelect').append(new Option(clientName, clientName, true, true)).val(clientName);
-    }
-    if (company && $('#cancCompanySelect option[value="' + company + '"]').length > 0) {
-        $('#cancCompanySelect').val(company);
-    } else if (company) {
-        $('#cancCompanySelect').append(new Option(company, company, true, true)).val(company);
-    }
-    const modalEl = document.getElementById('addCancellationModal');
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
-}
-
-function handleSaveClientRequest() {
-    const name = $('#reqClientNameInput').val() || 'Client';
-    const requestType = $('#reqTypeSelect').val();
-    alert(`Client Request "${requestType}" for ${name} saved successfully!`);
     
-    const modalEl = document.getElementById('clientRequestModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
-    $('#clientRequestForm')[0].reset();
-}
+    // Convert selects to text inputs for display purposes since we are moving to a specific client record
+    $('#claimClientNameDisplay').val(clientName);
+    $('#claimCompanyDisplay').val(company || '');
+    $('#claimClientId').val(clientId);
 
-function handleAddNewClaim() {
-    const client = $('#claimClientSelect').val() || 'Kishore Kumar';
-    const company = $('#claimCompanySelect').val() || 'AIA New Zealand';
-    const claimType = $('#claimTypeInput').val().trim() || 'Medical Claim';
-    const rawProcessedDate = $('#claimProcessedDateInput').val();
-    const processedDate = rawProcessedDate ? rawProcessedDate.split('-').reverse().join('/') : '20/08/2026';
-    const updateStatus = $('#claimUpdateSelect').val() || 'Under Assessment';
-    const rawApprovedDate = $('#claimApprovedDateInput').val();
-    const approvedDate = rawApprovedDate ? rawApprovedDate.split('-').reverse().join('/') : 'Pending';
-    const outcome = $('#claimOutcomeInput').val().trim() || 'Claim Under Assessment';
-    const admin = $('#claimAdminSelect').val() || 'Sushant Yadav';
+    // Build the action URL from the current base path
+    const basePath = window.location.origin + '/clients/login/' + clientId + '/claim';
+    $('#lodgeClaimForm').attr('action', basePath);
 
-    alert(`Claim Update for ${client} logged successfully!`);
+    // Reset fields
+    $('#claimTypeInput').val('');
+    $('#claimProcessedDateInput').val('');
+    $('#claimApprovedDateInput').val('');
+    $('#claimOutcomeInput').val('');
 
-    $('#lodgeClaimForm')[0].reset();
     const modalEl = document.getElementById('lodgeClaimModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
 }
 
-function handleAddNewCancellation() {
-    const client = $('#cancClientSelect').val() || 'Vandana Singh';
-    const company = $('#cancCompanySelect').val() || 'AIA Life';
-    const rawDateSent = $('#cancDateSentInput').val();
-    const dateSent = rawDateSent ? rawDateSent.split('-').reverse().join('/') : '15/08/2026';
-    const completedDate = $('#cancCompletedInput').val().trim() || 'Pending';
-    const outcome = $('#cancOutcomeInput').val().trim() || 'Cancellation In Progress';
-    const admin = $('#cancAdminSelect').val() || 'Sushant Yadav';
+function openCancellationUpdateModal(clientName, company, clientId) {
+    $('#cancModalTitle').text('New Cancellation Update - ' + clientName);
+    
+    // Set read-only fields
+    $('#cancClientNameDisplay').val(clientName);
+    $('#cancCompanyDisplay').val(company || '');
+    
+    // Build the action URL from the current base path
+    const basePath = window.location.origin + '/clients/login/' + clientId + '/cancellation';
+    $('#addCancellationForm').attr('action', basePath);
 
-    alert(`Cancellation Update for ${client} logged successfully!`);
+    // Reset fields
+    $('#cancDateSentInput').val('');
+    $('#cancCompletedInput').val('');
+    $('#cancOutcomeInput').val('');
+    $('#cancCommentsInput').val('');
 
-    $('#addCancellationForm')[0].reset();
     const modalEl = document.getElementById('addCancellationModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
 }
+
+function handleSaveClientRequest(event) {
+    // Let the browser submit the form normally to the server
+    return true;
+}
+
+
+
+
 
 function handleAddNewLoginClient() {
     const policyNo = $('#loginPolicyNoInput').val().trim() || ('POL-2026-' + Math.floor(1000 + Math.random() * 9000));
@@ -277,9 +255,11 @@ function handleAddNewLoginClient() {
                 <div class="action-kebab-dropdown">
                     <a href="javascript:void(0);" class="action-kebab-item" onclick="viewLoginClientDetails(${actionParams})"><i class="feather-eye text-primary me-1"></i> View Profile</a>
                     <a href="javascript:void(0);" class="action-kebab-item" onclick="editLoginClientDetails(${actionParams})"><i class="feather-edit text-success me-1"></i> Edit Client</a>
-                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openClientRequestModal('${clientFullName}', '${company}')"><i class="feather-git-pull-request text-warning me-1"></i> Client Request</a>
-                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openClaimUpdateModal('${clientFullName}', '${company}')"><i class="feather-shield text-info me-1"></i> Claim Update</a>
-                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openCancellationUpdateModal('${clientFullName}', '${company}')"><i class="feather-file-minus text-danger me-1"></i> Cancellation update</a>
+                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openClientRequestModal('${clientFullName}', '${company}', '')"><i class="feather-git-pull-request text-warning me-1"></i> Client Request</a>
+                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openClaimUpdateModal('${clientFullName}', '${company}', '')"><i class="feather-shield text-info me-1"></i> Claim Update</a>
+                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openInactiveClientModal('${clientFullName}', '${company}', '')"><i class="feather-user-x text-secondary me-1"></i> Inactive Clients</a>
+                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openNpwDeferredModal('${clientFullName}', '${company}', '')"><i class="feather-clock text-purple me-1"></i> NPW Deferred</a>
+                    <a href="javascript:void(0);" class="action-kebab-item" onclick="openCancellationUpdateModal('${clientFullName}', '${company}', '')"><i class="feather-file-minus text-danger me-1"></i> Cancellation update</a>
                 </div>
             </div>
         </div>`
@@ -336,3 +316,34 @@ $(document).ready(function () {
         });
     }
 });
+function openNpwDeferredModal(clientName, company, clientId) {
+    $('#npwModalTitle').text('NPW Deferred - ' + clientName);
+    
+    // Set read-only fields
+    $('#npwClientNameDisplay').val(clientName);
+    $('#npwCompanyDisplay').val(company || '');
+    
+    // Build the action URL from the current base path
+    const basePath = window.location.origin + '/clients/login/' + clientId + '/npw-deferred';
+    $('#addNpwForm').attr('action', basePath);
+
+    // Reset fields
+    $('#npwIssueDateInput').val('');
+    $('#npwPremiumInput').val('');
+    $('#npwNotesCommentsInput').val('');
+
+    const modalEl = document.getElementById('addNpwModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+}
+function openInactiveClientModal(clientName, company, clientId) {
+    $('#inactiveClientNameDisplay').text(clientName);
+    
+    // Build the action URL from the current base path
+    const basePath = window.location.origin + '/clients/login/' + clientId + '/inactive';
+    $('#addInactiveForm').attr('action', basePath);
+
+    const modalEl = document.getElementById('addInactiveModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+}

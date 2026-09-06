@@ -67,6 +67,11 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::middleware('permission:clients_login,write')->group(function () {
             Route::post('/clients/login', [ClientController::class, 'storeLoginClient'])->name('clients.login.store');
             Route::patch('/clients/login/{client}', [ClientController::class, 'updateLoginClient'])->name('clients.login.update');
+            Route::post('/clients/login/{client}/inforce', [ClientController::class, 'markAsInforce'])->name('clients.login.inforce');
+            Route::post('/clients/login/{client}/claim', [ClientController::class, 'markAsClaim'])->name('clients.login.claim');
+            Route::post('/clients/login/{client}/cancellation', [ClientController::class, 'markAsCancellation'])->name('clients.login.cancellation');
+            Route::post('/clients/login/{client}/npw-deferred', [ClientController::class, 'markAsNpwDeferred'])->name('clients.login.npw_deferred');
+            Route::post('/clients/login/{client}/inactive', [ClientController::class, 'markAsInactive'])->name('clients.login.inactive');
             Route::delete('/clients/login/{client}', [ClientController::class, 'destroyLoginClient'])->name('clients.login.destroy');
         });
     });

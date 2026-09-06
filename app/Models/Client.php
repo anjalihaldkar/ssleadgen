@@ -16,6 +16,22 @@ class Client extends Model
         'suburb', 'city', 'post_code', 'adviser', 'not_counting',
         'compliance_by', 'roa_due_date', 'status_compliance',
         'sent_to_client', 'outcome',
+        'inforce_date', 'inforce_request_type', 'inforce_process_status',
+        'inforce_process_by', 'inforce_outcome', 'inforce_comments', 'inforce_finished_date',
+        'claim_type', 'claim_admin', 'claim_processed_date',
+        'claim_update_status',        'claim_approved_date',
+        'claim_result',
+        'canc_date_sent',
+        'canc_completed_date',
+        'canc_outcome',
+        'canc_comments',
+        'canc_admin',
+        'npw_issue_date',
+        'npw_premium',
+        'npw_premium_mode',
+        'npw_admin',
+        'npw_pending',
+        'npw_comments',
     ];
 
     protected $casts = [
@@ -23,11 +39,23 @@ class Client extends Model
         'login_date' => 'date',
         'roa_due_date' => 'date',
         'not_counting' => 'boolean',
+        'inforce_date'          => 'date',
+        'inforce_finished_date' => 'date',
+        'claim_processed_date'  => 'date',
+        'claim_approved_date'   => 'date',
+        'canc_date_sent'        => 'date',
+        'canc_completed_date'   => 'date',
+        'npw_issue_date'        => 'date',
     ];
 
     public function scopeLoginClients($query)
     {
         return $query->where('status', 'Login Client');
+    }
+
+    public function scopeInforce($query)
+    {
+        return $query->where('status', 'Inforce');
     }
 
     public function policies()

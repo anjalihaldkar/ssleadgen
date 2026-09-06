@@ -107,8 +107,10 @@
                                         <div class="action-kebab-dropdown">
                                             <a href="javascript:void(0);" class="action-kebab-item" onclick="viewClientDetails('{{ addslashes($client->first_name . ' ' . $client->last_name) }}', '{{ addslashes($client->phone ?? 'N/A') }}', '{{ addslashes($client->address ?? 'N/A') }}', '{{ $client->status }}', '{{ $client->policies->count() }}')"><i class="feather-eye text-primary me-1"></i> View Profile</a>
                                             @if(auth()->user()->canWrite('clients'))
-                                                <a href="javascript:void(0);" class="action-kebab-item" onclick="openClientRequestModal('{{ addslashes($client->first_name . ' ' . $client->last_name) }}', 'AIA Life')"><i class="feather-git-pull-request text-warning me-1"></i> Client Request</a>
+                                                <a href="javascript:void(0);" class="action-kebab-item" onclick="openClientRequestModal('{{ addslashes($client->first_name . ' ' . $client->last_name) }}', 'AIA Life')"><i class="feather-git-pull-request text-warning me-1"></i> Inforce Clients</a>
                                                 <a href="javascript:void(0);" class="action-kebab-item" onclick="openClaimUpdateModal('{{ addslashes($client->first_name . ' ' . $client->last_name) }}', 'AIA Life')"><i class="feather-shield text-info me-1"></i> Claim Update</a>
+                                                <a href="javascript:void(0);" class="action-kebab-item" onclick="openInactiveClientModal()"><i class="feather-user-x text-secondary me-1"></i> Inactive Clients</a>
+                                                <a href="javascript:void(0);" class="action-kebab-item" onclick="openNpwDeferredModal()"><i class="feather-clock text-purple me-1"></i> NPW Deferred</a>
                                                 <a href="javascript:void(0);" class="action-kebab-item" onclick="openCancellationUpdateModal('{{ addslashes($client->first_name . ' ' . $client->last_name) }}', 'AIA Life')"><i class="feather-file-minus text-danger me-1"></i> Cancellation update</a>
                                             @endif
                                         </div>
